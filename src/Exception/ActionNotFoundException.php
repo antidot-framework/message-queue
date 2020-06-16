@@ -10,7 +10,6 @@ use function sprintf;
 
 class ActionNotFoundException extends InvalidArgumentException implements NotFoundExceptionInterface
 {
-
     public const MESSAGE = 'Action named "%s" does not exist.';
 
     public static function withId(string $id): self
