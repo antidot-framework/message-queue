@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Antidot\Queue;
 
+use Interop\Queue\Message;
 use InvalidArgumentException;
 use JsonSerializable;
 
@@ -20,6 +21,17 @@ class JobPayload implements JsonSerializable
         $self->type = $messageType;
         $self->assertValidMessageContent($messageContent);
         $self->message = $messageContent;
+
+        return $self;
+    }
+
+    public static function createFromMessage(Message $message): self
+    {
+        $self = new self();
+        $payload = json_decode($message->getBody(), true, 10, JSON_THROW_ON_ERROR);
+        $self->assertValidMessageData($payload);
+        $self->type = $payload['type'];
+        $self->message = $payload['message'];
 
         return $self;
     }
@@ -44,6 +56,10 @@ class JobPayload implements JsonSerializable
         }
 
         throw new InvalidArgumentException(sprintf(self::INVALID_CONTENT_MESSAGE, gettype($messageContent)));
+    }
+
+    private function assertValidMessageData($payload): void
+    {
     }
 
     public function jsonSerialize(): array
