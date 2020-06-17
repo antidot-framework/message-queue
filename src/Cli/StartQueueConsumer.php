@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Antidot\Queue\Cli;
 
 use Enqueue\Consumption\QueueConsumerInterface;
-use Enqueue\Consumption\Result;
 use Interop\Queue\Context;
 use Interop\Queue\Message;
 use Interop\Queue\Processor;

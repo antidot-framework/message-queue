@@ -13,7 +13,8 @@ Check the list of the available extensions at [their docs](https://github.com/ph
 * Filesystem Queue
 * Redis Queue
 
-Each implementation will have different configuration details, see concrete documentation section.
+Each implementation will have different configuration details, see concrete documentation section. Furthermore, 
+you can use any of [systems implemented in the php-enqueue package](https://php-enqueue.github.io/transport) making the needed factories.
 
 ### Usage
 
@@ -69,6 +70,8 @@ parameters:
         context: fs # redis
         context_service: queue.context.default
         container: queue.container.default
+        extensions:
+          - Enqueue\Consumption\Extension\LoggerExtension
 
 ```
 

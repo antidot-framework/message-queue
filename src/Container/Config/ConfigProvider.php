@@ -8,11 +8,13 @@ use Antidot\Queue\Cli\StartQueueConsumer;
 use Antidot\Queue\Container\ActionContainerFactory;
 use Antidot\Queue\Container\MessageProcessorFactory;
 use Antidot\Queue\Container\ProducerFactory;
+use Antidot\Queue\Container\QueueConsumerFactory;
 use Antidot\Queue\Container\StartQueueConsumerFactory;
 use Antidot\Queue\MessageProcessor;
 use Antidot\Queue\Producer;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
+use Enqueue\Consumption\Extension\LoggerExtension;
 use Enqueue\Consumption\QueueConsumer;
 use Enqueue\Consumption\QueueConsumerInterface;
 use Enqueue\Null\NullContext;
@@ -28,13 +30,17 @@ class ConfigProvider
     public const QUEUES_KEY = 'queues';
     public const CONTAINER_KEY = 'container';
     public const CONTEXTS_KEY = 'contexts';
+    public const CONTEXT_SERVICE_KEY = 'context_service';
     public const CONTEXTS_TYPE_KEY = 'context_type';
     public const DEFAULT_CONTEXT_TYPE = 'null';
     public const DEFAULT_CONTEXT_KEY = 'default_context';
-    public const CONTEXT_SERVICE_KEY = 'context_service';
+    public const EXTENSIONS_KEY = 'extensions';
     public const DEFAULT_CONTEXT = 'default';
     public const DEFAULT_CONTEXT_SERVICE = 'queue.context.default';
     public const DEFAULT_CONTAINER_SERVICE = 'queue.container.default';
+    public const DEFAULT_EXTENSIONS = [
+        LoggerExtension::class,
+    ];
     public const MESSAGE_TYPES_KEY = 'message_types';
     public const INVALID_CONFIG_ARRAY_MESSAGE = 'Value for key "%s" must be of type array.';
     public const MISSING_CONFIG_MESSAGE = 'Missing config required key "%s", see the docs for complete config.';
@@ -47,6 +53,7 @@ class ConfigProvider
                     self::CONTEXTS_TYPE_KEY => self::DEFAULT_CONTEXT_TYPE,
                     self::CONTEXT_SERVICE_KEY => self::DEFAULT_CONTEXT_SERVICE,
                     self::CONTAINER_KEY => self::DEFAULT_CONTAINER_SERVICE,
+                    self::EXTENSIONS_KEY => self::DEFAULT_EXTENSIONS,
                 ],
             ],
         ],
@@ -57,6 +64,7 @@ class ConfigProvider
         ],
         'services' => [
             self::DEFAULT_CONTEXT_SERVICE => NullContext::class,
+            LoggerExtension::class => LoggerExtension::class,
         ],
         'console' => [
             'commands' => [
@@ -64,10 +72,8 @@ class ConfigProvider
             ],
             'factories' => [
                 StartQueueConsumer::class => StartQueueConsumerFactory::class,
+                QueueConsumerInterface::class => QueueConsumerFactory::class,
             ],
-            'services' => [
-                QueueConsumerInterface::class => QueueConsumer::class,
-            ]
         ],
     ];
 
