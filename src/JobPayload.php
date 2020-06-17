@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Antidot\Queue;
 
+use Assert\Assertion;
 use Interop\Queue\Message;
 use InvalidArgumentException;
 use JsonSerializable;
@@ -60,6 +61,9 @@ class JobPayload implements JsonSerializable
 
     private function assertValidMessageData($payload): void
     {
+        Assertion::keyExists($payload, 'type', 'The job payload should have the "type" key.');
+        Assertion::string($payload['type'], 'The job payload kay "type" should have a string value.');
+        Assertion::keyExists($payload, 'message', 'The job payload should have the "message" key.');
     }
 
     public function jsonSerialize(): array

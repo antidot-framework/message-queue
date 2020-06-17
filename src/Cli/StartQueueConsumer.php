@@ -4,29 +4,30 @@ declare(strict_types=1);
 
 namespace Antidot\Queue\Cli;
 
-use Antidot\Queue\JobPayload;
+use Antidot\Queue\MessageProcessor;
 use Enqueue\Consumption\QueueConsumerInterface;
+use Enqueue\Consumption\Result;
+use Interop\Queue\Context;
 use Interop\Queue\Message;
-use Interop\Queue\Processor;
 use InvalidArgumentException;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
 
 class StartQueueConsumer extends Command
 {
     public const NAME = 'queue:start';
-    private const ERROR_MESSAGE_TEMPLATE = 'Error with message: %s. In file %s in line %s. Failing message: %s.';
     private QueueConsumerInterface $consumer;
-    private ContainerInterface $actionContainer;
+    private MessageProcessor $processor;
+    /** @var Context */
+    private Context $context;
 
-    public function __construct(QueueConsumerInterface $consumer, ContainerInterface $actionContainer)
+    public function __construct(QueueConsumerInterface $consumer, MessageProcessor $messageProcessor, Context $context)
     {
         $this->consumer = $consumer;
-        $this->actionContainer = $actionContainer;
+        $this->processor = $messageProcessor;
+        $this->context = $context;
         parent::__construct();
     }
 
@@ -47,31 +48,9 @@ class StartQueueConsumer extends Command
         if (false === is_string($queue)) {
             throw new InvalidArgumentException('Argument "queue_name" must be of type string.');
         }
-        $container = $this->actionContainer;
         $this->consumer->bindCallback(
             $queue,
-            static function (Message $message) use ($container) {
-                try {
-                    $jobPayload = JobPayload::createFromMessage($message);
-                    $action = $container->get($jobPayload->type());
-                    $action($jobPayload);
-
-                    return Processor::ACK;
-                } catch (Throwable $exception) {
-                    trigger_error(
-                        sprintf(
-                            self::ERROR_MESSAGE_TEMPLATE,
-                            $exception->getMessage(),
-                            $exception->getFile(),
-                            $exception->getLine(),
-                            json_encode($message, JSON_THROW_ON_ERROR)
-                        ),
-                        E_USER_WARNING
-                    );
-
-                    return Processor::REJECT;
-                }
-            }
+            fn(Message $message): Result => $this->processor->process($message, $this->context)
         );
 
         $this->consumer->consume();

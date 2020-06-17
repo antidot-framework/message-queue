@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace AntidotTest\Queue;
 
 use Antidot\Queue\Job;
-use Antidot\Queue\Producer;
+use Antidot\Queue\JobProducer;
 use Interop\Queue\Context;
 use Interop\Queue\Message;
 use Interop\Queue\Producer as InteropProducer;
 use Interop\Queue\Queue;
 use PHPUnit\Framework\TestCase;
 
-class ProducerTest extends TestCase
+class JobProducerTest extends TestCase
 {
     private const SOME_QUEUE = 'default';
     private const SOME_MESSAGE = 'Hello word!';
@@ -44,7 +44,7 @@ class ProducerTest extends TestCase
         $producer->expects($this->once())
             ->method('send')
             ->with($queue, $message);
-        $queueProducer = new Producer($context);
+        $queueProducer = new JobProducer($context);
         $queueProducer->enqueue($job);
     }
 }

@@ -15,9 +15,12 @@ class StartQueueConsumerFactory
         ContainerInterface $container,
         string $contextName = ConfigProvider::DEFAULT_CONTEXT
     ): StartQueueConsumer {
+        $contextConfig = ConfigProvider::getContextConfig($contextName, $container->get(ConfigProvider::CONFIG_KEY));
+
         return new StartQueueConsumer(
             $container->get(QueueConsumerInterface::class),
-            $container->get($contextName . '.action.container')
+            $container->get($contextConfig[ConfigProvider::CONTAINER_KEY]),
+            $container->get($contextConfig[ConfigProvider::CONTEXT_SERVICE_KEY])
         );
     }
 }

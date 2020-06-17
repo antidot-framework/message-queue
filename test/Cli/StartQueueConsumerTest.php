@@ -6,9 +6,10 @@ declare(strict_types=1);
 namespace AntidotTest\Queue\Cli;
 
 use Antidot\Queue\Cli\StartQueueConsumer;
+use Antidot\Queue\MessageProcessor;
 use Enqueue\Consumption\QueueConsumerInterface;
+use Interop\Queue\Context;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -21,7 +22,8 @@ class StartQueueConsumerTest extends TestCase
     {
         $command = new StartQueueConsumer(
             $this->createMock(QueueConsumerInterface::class),
-            $this->createMock(ContainerInterface::class)
+            $this->createMock(MessageProcessor::class),
+            $this->createMock(Context::class)
         );
 
         $this->console = new Application();
