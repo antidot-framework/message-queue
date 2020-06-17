@@ -10,13 +10,12 @@ use Antidot\Queue\Container\MessageProcessorFactory;
 use Antidot\Queue\Container\ProducerFactory;
 use Antidot\Queue\Container\StartQueueConsumerFactory;
 use Antidot\Queue\MessageProcessor;
+use Antidot\Queue\Producer;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
 use Enqueue\Consumption\QueueConsumer;
 use Enqueue\Consumption\QueueConsumerInterface;
 use Enqueue\Null\NullContext;
-use Interop\Queue\Context;
-use Interop\Queue\Producer;
 
 use InvalidArgumentException;
 
