@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Antidot\Queue\Container\Config;
 
-use Antidot\Queue\ActionContainer;
 use Antidot\Queue\Cli\StartQueueConsumer;
 use Antidot\Queue\Container\ActionContainerFactory;
 use Antidot\Queue\Container\MessageProcessorFactory;
 use Antidot\Queue\Container\ProducerFactory;
-use Antidot\Queue\MessageProcessor;
+use Antidot\Queue\Container\StartQueueConsumerFactory;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
 
@@ -40,8 +39,8 @@ class ConfigProvider
             'commands' => [
                 StartQueueConsumer::NAME => StartQueueConsumer::class,
             ],
-            'services' => [
-                StartQueueConsumer::class => StartQueueConsumer::class,
+            'factories' => [
+                StartQueueConsumer::class => StartQueueConsumerFactory::class,
             ]
         ]
     ];
