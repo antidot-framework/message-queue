@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Antidot\Queue\Cli;
 
-use Antidot\Queue\MessageProcessor;
 use Enqueue\Consumption\QueueConsumerInterface;
 use Enqueue\Consumption\Result;
 use Interop\Queue\Context;
 use Interop\Queue\Message;
+use Interop\Queue\Processor;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,11 +19,11 @@ class StartQueueConsumer extends Command
 {
     public const NAME = 'queue:start';
     private QueueConsumerInterface $consumer;
-    private MessageProcessor $processor;
+    private Processor $processor;
     /** @var Context */
     private Context $context;
 
-    public function __construct(QueueConsumerInterface $consumer, MessageProcessor $messageProcessor, Context $context)
+    public function __construct(QueueConsumerInterface $consumer, Processor $messageProcessor, Context $context)
     {
         $this->consumer = $consumer;
         $this->processor = $messageProcessor;
@@ -50,7 +50,7 @@ class StartQueueConsumer extends Command
         }
         $this->consumer->bindCallback(
             $queue,
-            fn(Message $message): Result => $this->processor->process($message, $this->context)
+            fn(Message $message) => $this->processor->process($message, $this->context)
         );
 
         $this->consumer->consume();
