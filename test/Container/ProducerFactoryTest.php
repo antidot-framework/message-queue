@@ -17,7 +17,7 @@ class ProducerFactoryTest extends TestCase
         $container = $this->createMock(ContainerInterface::class);
         $container->expects($this->exactly(2))
             ->method('get')
-            ->withConsecutive([ConfigProvider::CONFIG_KEY], [ConfigProvider::DEFAULT_CONTEXT_TYPE . '.context'])
+            ->withConsecutive([ConfigProvider::CONFIG_KEY], [ConfigProvider::DEFAULT_CONTEXT_SERVICE])
             ->willReturnOnConsecutiveCalls(ConfigProvider::DEFAULT_CONFIG, $this->createMock(Context::class));
         $factory = new ProducerFactory();
         $factory->__invoke($container);

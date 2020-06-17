@@ -11,14 +11,12 @@ use Psr\Container\ContainerInterface;
 
 class ProducerFactory
 {
-    private const SERVICE_SUFFIX = '.context';
-
     public function __invoke(
         ContainerInterface $container,
         string $contextName = ConfigProvider::DEFAULT_CONTEXT
     ): Producer {
         $contextConfig = ConfigProvider::getContextConfig($contextName, $container->get(ConfigProvider::CONFIG_KEY));
-        $context = $container->get($contextConfig[ConfigProvider::CONTEXTS_TYPE_KEY] . self::SERVICE_SUFFIX);
+        $context = $container->get($contextConfig[ConfigProvider::CONTEXT_SERVICE_KEY]);
 
         return new JobProducer($context);
     }

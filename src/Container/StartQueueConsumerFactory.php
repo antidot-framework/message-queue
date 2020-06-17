@@ -7,6 +7,7 @@ namespace Antidot\Queue\Container;
 use Antidot\Queue\Cli\StartQueueConsumer;
 use Antidot\Queue\Container\Config\ConfigProvider;
 use Enqueue\Consumption\QueueConsumerInterface;
+use Interop\Queue\Processor;
 use Psr\Container\ContainerInterface;
 
 class StartQueueConsumerFactory
@@ -19,7 +20,7 @@ class StartQueueConsumerFactory
 
         return new StartQueueConsumer(
             $container->get(QueueConsumerInterface::class),
-            $container->get($contextConfig[ConfigProvider::CONTAINER_KEY]),
+            $container->get(Processor::class),
             $container->get($contextConfig[ConfigProvider::CONTEXT_SERVICE_KEY])
         );
     }

@@ -17,6 +17,7 @@ use Enqueue\Consumption\QueueConsumer;
 use Enqueue\Consumption\QueueConsumerInterface;
 use Enqueue\Null\NullContext;
 
+use Interop\Queue\Processor;
 use InvalidArgumentException;
 
 use function sprintf;
@@ -50,12 +51,12 @@ class ConfigProvider
             ],
         ],
         'factories' => [
-            self::DEFAULT_CONTEXT . '.action.container' => ActionContainerFactory::class,
-            MessageProcessor::class => MessageProcessorFactory::class,
+            self::DEFAULT_CONTAINER_SERVICE => ActionContainerFactory::class,
+            Processor::class => MessageProcessorFactory::class,
             Producer::class => ProducerFactory::class,
         ],
         'services' => [
-            'null.context' => NullContext::class,
+            self::DEFAULT_CONTEXT_SERVICE => NullContext::class,
         ],
         'console' => [
             'commands' => [
