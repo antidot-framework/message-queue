@@ -9,8 +9,14 @@ use Antidot\Queue\Container\ActionContainerFactory;
 use Antidot\Queue\Container\MessageProcessorFactory;
 use Antidot\Queue\Container\ProducerFactory;
 use Antidot\Queue\Container\StartQueueConsumerFactory;
+use Antidot\Queue\MessageProcessor;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
+use Enqueue\Consumption\QueueConsumer;
+use Enqueue\Consumption\QueueConsumerInterface;
+use Enqueue\Null\NullContext;
+use Interop\Queue\Context;
+use Interop\Queue\Producer;
 
 use function sprintf;
 
@@ -34,6 +40,11 @@ class ConfigProvider
             self::DEFAULT_CONTEXT . '.action.container' => ActionContainerFactory::class,
             self::DEFAULT_CONTEXT . '.message.processor' => MessageProcessorFactory::class,
             self::DEFAULT_CONTEXT . '.message.producer' => ProducerFactory::class,
+            MessageProcessor::class => MessageProcessorFactory::class,
+            Producer::class => ProducerFactory::class,
+        ],
+        'services' => [
+            Context::class => NullContext::class,
         ],
         'console' => [
             'commands' => [
@@ -41,8 +52,11 @@ class ConfigProvider
             ],
             'factories' => [
                 StartQueueConsumer::class => StartQueueConsumerFactory::class,
+            ],
+            'services' => [
+                QueueConsumerInterface::class => QueueConsumer::class,
             ]
-        ]
+        ],
     ];
 
     public function __invoke(): array
