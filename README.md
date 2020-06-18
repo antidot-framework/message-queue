@@ -1,5 +1,10 @@
 # Antidot Framework Message Queue
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/antidot-framework/message-queue/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/antidot-framework/message-queue/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/antidot-framework/message-queue/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/antidot-framework/message-queue/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/antidot-framework/message-queue/badges/build.png?b=master)](https://scrutinizer-ci.com/g/antidot-framework/message-queue/build-status/master)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/antidot-framework/message-queue/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
+
 Message bus and Pub-Sub implementation using [enqueue/enqueue](https://github.com/php-enqueue/enqueue-dev) for Antidot Framework.
 Check the list of the available extensions at [their docs](https://github.com/php-enqueue/enqueue-dev/blob/master/docs/client/supported_brokers.md).
 
@@ -41,8 +46,59 @@ bin/console queue:start default # "default is the queue name"
 Now you can configure actions for the message types received by the queue. 
 The action is a callable class that receives a JobPayload as first parameter.
 
-### Config
+### Jobs and Producer
 
+A Job is the class responsible to transport given data to the queue. It is composed by two parameters:
+the Queue name as a single string, and the JobPayload with the data to be processed in the queue, 
+the JsonPayload is a json serializable object composed by two other parameters:
+the message type, and the message data as string or array.
+
+Once you have a Job, you need to pass it to the producer to send the message to the queue. See the example below.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Psr\Container\ContainerInterface;
+use Antidot\Queue\Producer;
+
+/** @var ContainerInterface $container */
+/** @var Producer $producer */
+$producer = $container->get(Producer::class);
+
+// Send String Job of type "some_message_type" to "default" queue.
+$job1 = Job::create('default', 'some_message_type', 'Hello world!!');
+$producer->enqueue($job1);
+
+// Send Array Job of type "other_message_type" to "other_queue" queue.
+$job2 = Job::create('other_queue', 'other_message_type', ['greet' => 'Hello world!!']);
+$producer->enqueue($job2);
+
+```
+
+### Actions
+
+The actions are invokable classes that will be executed when the queue processes the given message. This class have a unique parameter, the JobPayload. 
+
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Antidot\Queue\JobPayload;
+
+class SomeMessageTypeAction
+{
+    public function __invoke(JobPayload $payload): void
+    {
+        // do some stuff with the job payload here.
+    }
+}
+```
+
+### Config
 
 #### Bind an action to a message type.
 
@@ -64,16 +120,41 @@ This is the default config.
 ```yaml
 parameters:
   queues:
+    default_context: default
     contexts:
       default:
         message_types: []
         context: fs # redis
         context_service: queue.context.default
         container: queue.container.default
-        extensions:
-          - Enqueue\Consumption\Extension\LoggerExtension
-
 ```
+
+### Consumer
+
+AKA worker, is CLI command responsible to stay listening the given queue to get messages aan process each message one by one. 
+In this early version the only argument that it uses is the queue name to start listening to.  
+
+```bash
+bin/console queue:start queue_name
+```
+
+### Events
+
+The Antidot Framework Message Queue uses the [PSR-14 Event Dispatcher]() to allow listening different instant occurred in the queue execution:
+
+* **QueueConsumeWasStarted:**
+* **MessageReceived:**
+* **MessageProcessed:**
+
+### Logger
+
+You can enable or disable debug mode logger in the  config. It should log  it uses PSR-3 Logger Interface internally.
+
+#### Production config
+
+In production environment, you usually need some type of daemon to keep the consumer process alive, you cn use the alternative.
+
+##### Supervisor
 
 #### Filesystem Config
 

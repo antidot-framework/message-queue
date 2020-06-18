@@ -12,9 +12,9 @@ use JsonSerializable;
 class JobPayload implements JsonSerializable
 {
     public const INVALID_CONTENT_MESSAGE = 'Invalid message content type "%s" given, it must be array or string type.';
-    private string $type;
+    protected string $type;
     /** @var string|array */
-    private $message;
+    protected $message;
 
     public static function create(string $messageType, $messageContent): self
     {

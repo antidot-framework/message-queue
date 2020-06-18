@@ -4,24 +4,37 @@ declare(strict_types=1);
 
 namespace Antidot\Queue;
 
+use Antidot\Queue\Event\MessageProcessed;
+use Antidot\Queue\Event\MessageReceived;
 use Enqueue\Consumption\Result;
 use Interop\Queue\Context;
 use Interop\Queue\Message;
 use Interop\Queue\Processor;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
 class MessageProcessor implements Processor
 {
     private const ERROR_MESSAGE_TEMPLATE = 'Error with message: %s. In file %s in line %s. Failing message: %s.';
     private ContainerInterface $container;
+    private EventDispatcherInterface $dispatcher;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, EventDispatcherInterface $dispatcher)
     {
         $this->container = $container;
+        $this->dispatcher = $dispatcher;
     }
 
     public function process(Message $message, Context $context): Result
+    {
+        $this->dispatcher->dispatch(MessageReceived::occur(['message' => $message]));
+        $result = $this->processMessage($message);
+        $this->dispatcher->dispatch(MessageProcessed::occur(['result' => $result]));
+
+        return $result;
+    }
+    public function processMessage(Message $message): Result
     {
         $jobPayload = null;
         try {

@@ -7,6 +7,7 @@ namespace Antidot\Queue\Container;
 use Antidot\Queue\Container\Config\ConfigProvider;
 use Antidot\Queue\MessageProcessor;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class MessageProcessorFactory
 {
@@ -17,6 +18,6 @@ class MessageProcessorFactory
         $contextConfig = ConfigProvider::getContextConfig($contextName, $container->get(ConfigProvider::CONFIG_KEY));
         $actionContainer = $container->get($contextConfig[ConfigProvider::CONTAINER_KEY]);
 
-        return new MessageProcessor($actionContainer);
+        return new MessageProcessor($actionContainer, $container->get(EventDispatcherInterface::class));
     }
 }

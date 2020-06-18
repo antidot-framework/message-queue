@@ -6,16 +6,16 @@ namespace Antidot\Queue\Container\Config;
 
 use Antidot\Queue\Cli\StartQueueConsumer;
 use Antidot\Queue\Container\ActionContainerFactory;
+use Antidot\Queue\Container\LoggerExtensionFactory;
 use Antidot\Queue\Container\MessageProcessorFactory;
 use Antidot\Queue\Container\ProducerFactory;
 use Antidot\Queue\Container\QueueConsumerFactory;
 use Antidot\Queue\Container\StartQueueConsumerFactory;
-use Antidot\Queue\MessageProcessor;
 use Antidot\Queue\Producer;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
 use Enqueue\Consumption\Extension\LoggerExtension;
-use Enqueue\Consumption\QueueConsumer;
+use Enqueue\Consumption\Extension\SignalExtension;
 use Enqueue\Consumption\QueueConsumerInterface;
 use Enqueue\Null\NullContext;
 
@@ -40,6 +40,7 @@ class ConfigProvider
     public const DEFAULT_CONTAINER_SERVICE = 'queue.container.default';
     public const DEFAULT_EXTENSIONS = [
         LoggerExtension::class,
+        SignalExtension::class,
     ];
     public const MESSAGE_TYPES_KEY = 'message_types';
     public const INVALID_CONFIG_ARRAY_MESSAGE = 'Value for key "%s" must be of type array.';
@@ -61,10 +62,11 @@ class ConfigProvider
             self::DEFAULT_CONTAINER_SERVICE => ActionContainerFactory::class,
             Processor::class => MessageProcessorFactory::class,
             Producer::class => ProducerFactory::class,
+            LoggerExtension::class => LoggerExtensionFactory::class,
         ],
         'services' => [
             self::DEFAULT_CONTEXT_SERVICE => NullContext::class,
-            LoggerExtension::class => LoggerExtension::class,
+            SignalExtension::class => SignalExtension::class,
         ],
         'console' => [
             'commands' => [

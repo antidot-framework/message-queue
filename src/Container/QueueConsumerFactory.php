@@ -20,8 +20,8 @@ class QueueConsumerFactory
         $contextConfig = ConfigProvider::getContextConfig($contextName, $container->get(ConfigProvider::CONFIG_KEY));
 
         $extensions = [];
-        foreach ($contextConfig['extensions'] ?? [] as $extensionName) {
-            $extensions[] = $container->get($extensionName);
+        foreach ($contextConfig['extensions'] ?? [] as $extension) {
+            $extensions[] = $container->get($extension);
         }
 
         return new QueueConsumer(
