@@ -6,7 +6,6 @@ namespace Antidot\Queue\Container;
 
 use Antidot\Queue\ActionContainer;
 use Antidot\Queue\Container\Config\ConfigProvider;
-use Antidot\Queue\Container\Config\Configured;
 use Assert\AssertionFailedException;
 use Psr\Container\ContainerInterface;
 
@@ -24,7 +23,7 @@ class ActionContainerFactory
     ): ActionContainer {
         $contextConfig = ConfigProvider::getContextConfig($contextName, $container->get(ConfigProvider::CONFIG_KEY));
         foreach ($contextConfig[ConfigProvider::MESSAGE_TYPES_KEY] ?? [] as $messageType => $action) {
-            $actions[$messageType] = static fn(): callable => $container->get($action);
+            $actions[$messageType] = static fn() => $container->get($action);
         }
 
         return new ActionContainer($actions ?? []);
