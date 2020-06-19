@@ -9,18 +9,11 @@ use Psr\EventDispatcher\StoppableEventInterface;
 
 abstract class QueueEvent implements StoppableEventInterface, JsonSerializable
 {
-    protected array $payload;
+    protected array $payload = [];
 
-    public static function occur(array $payload): self
+    public function __construct()
     {
-        $self = new static();
-        $self->assertPayload($payload);
-        $self->payload = $payload;
-
-        return $self;
     }
-
-    abstract protected function assertPayload(array $payload): void;
 
     public function payload(): array
     {

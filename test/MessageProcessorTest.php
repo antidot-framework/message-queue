@@ -43,7 +43,7 @@ class MessageProcessorTest extends TestCase
 
     public function testItShouldOmitGivenQueueJobsWhenNoActionConfigured(): void
     {
-        $this->message->expects($this->once())
+        $this->message->expects($this->atLeastOnce())
             ->method('getBody')
             ->willReturn(self::JSON_MESSAGE);
         $this->actionContainer->expects($this->once())
@@ -57,7 +57,7 @@ class MessageProcessorTest extends TestCase
 
     public function testItShouldConsumeGivenQueueJobsInTheConfiguredAction(): void
     {
-        $this->message->expects($this->once())
+        $this->message->expects($this->atLeastOnce())
             ->method('getBody')
             ->willReturn(self::JSON_MESSAGE);
         $this->actionContainer->expects($this->once())
@@ -75,7 +75,7 @@ class MessageProcessorTest extends TestCase
 
     public function testItShouldRejectMessageWithInvalidMessage(): void
     {
-        $this->message->expects($this->once())
+        $this->message->expects($this->atLeastOnce())
             ->method('getBody')
             ->willReturn(self::INVALID_FORMAT_MESSAGE);
         $messageProcessor = new MessageProcessor($this->actionContainer, $this->eventDispatcher);
@@ -85,7 +85,7 @@ class MessageProcessorTest extends TestCase
 
     public function testItShouldRejectMessageWhenActionExecutionFails(): void
     {
-        $this->message->expects($this->once())
+        $this->message->expects($this->atLeastOnce())
             ->method('getBody')
             ->willReturn(self::JSON_MESSAGE);
         $this->actionContainer->expects($this->once())

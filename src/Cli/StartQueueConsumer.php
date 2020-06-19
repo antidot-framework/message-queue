@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Antidot\Queue\Cli;
 
 use Antidot\Queue\Event\QueueConsumerStarted;
-use DateTime;
-use Enqueue\Consumption\Extension\LimitConsumptionTimeExtension;
 use Enqueue\Consumption\QueueConsumerInterface;
 use Interop\Queue\Context;
 use Interop\Queue\Message;
@@ -17,8 +15,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use function dump;
 
 class StartQueueConsumer extends Command
 {
@@ -59,14 +55,11 @@ class StartQueueConsumer extends Command
         if (false === is_string($queue)) {
             throw new InvalidArgumentException(self::INVALID_NAME_MESSAGE);
         }
+        $this->eventDispatcher->dispatch(QueueConsumerStarted::occur($queue));
         $processor = $this->processor;
         $context = $this->context;
-        $dispatcher = $this->eventDispatcher;
-        $dispatcher->dispatch(QueueConsumerStarted::occur(['queue' => $queue]));
-        $this->consumer->bindCallback(
-            $queue,
-            static fn(Message $message) => $processor->process($message, $context)
-        );
+        $callback = static fn(Message $message) => $processor->process($message, $context);
+        $this->consumer->bindCallback($queue, $callback);
         $this->consumer->consume();
 
         return 0;

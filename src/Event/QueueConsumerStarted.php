@@ -6,14 +6,11 @@ namespace Antidot\Queue\Event;
 
 class QueueConsumerStarted extends QueueEvent
 {
-    private string $queue;
-
-    public function queue(): string
+    public static function occur(string $queueName): self
     {
-        return $this->queue;
-    }
+        $self = new static();
+        $self->payload = ['queue' => $queueName];
 
-    protected function assertPayload(array $payload): void
-    {
+        return $self;
     }
 }

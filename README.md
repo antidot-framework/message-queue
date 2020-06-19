@@ -127,6 +127,10 @@ parameters:
         context: fs # redis
         context_service: queue.context.default
         container: queue.container.default
+        extensions:
+          - Enqueue\Consumption\Extension\LoggerExtension
+          - Enqueue\Consumption\Extension\SignalExtension
+          - Enqueue\Consumption\Extension\LogExtension
 ```
 
 ### Consumer
@@ -146,11 +150,13 @@ The Antidot Framework Message Queue uses the [PSR-14 Event Dispatcher]() to allo
 * **MessageReceived:**
 * **MessageProcessed:**
 
-### Logger
+### Extensions
 
-You can enable or disable debug mode logger in the  config. It should log  it uses PSR-3 Logger Interface internally.
+#### LogExtension
 
-#### Production config
+You can enable or disable debug mode logger in the  config. it uses PSR-3 Logger Interface internally.
+
+### Running in Production
 
 In production environment, you usually need some type of daemon to keep the consumer process alive, you cn use the alternative.
 

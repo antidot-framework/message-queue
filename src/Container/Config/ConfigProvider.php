@@ -14,11 +14,11 @@ use Antidot\Queue\Container\StartQueueConsumerFactory;
 use Antidot\Queue\Producer;
 use Assert\Assertion;
 use Assert\AssertionFailedException;
+use Enqueue\Consumption\Extension\LogExtension;
 use Enqueue\Consumption\Extension\LoggerExtension;
 use Enqueue\Consumption\Extension\SignalExtension;
 use Enqueue\Consumption\QueueConsumerInterface;
 use Enqueue\Null\NullContext;
-
 use Interop\Queue\Processor;
 use InvalidArgumentException;
 
@@ -41,6 +41,7 @@ class ConfigProvider
     public const DEFAULT_EXTENSIONS = [
         LoggerExtension::class,
         SignalExtension::class,
+        LogExtension::class,
     ];
     public const MESSAGE_TYPES_KEY = 'message_types';
     public const INVALID_CONFIG_ARRAY_MESSAGE = 'Value for key "%s" must be of type array.';
@@ -67,6 +68,7 @@ class ConfigProvider
         'services' => [
             self::DEFAULT_CONTEXT_SERVICE => NullContext::class,
             SignalExtension::class => SignalExtension::class,
+            LogExtension::class => LogExtension::class,
         ],
         'console' => [
             'commands' => [

@@ -28,9 +28,9 @@ class MessageProcessor implements Processor
 
     public function process(Message $message, Context $context): Result
     {
-        $this->dispatcher->dispatch(MessageReceived::occur(['message' => $message]));
+        $this->dispatcher->dispatch(MessageReceived::occur($message));
         $result = $this->processMessage($message);
-        $this->dispatcher->dispatch(MessageProcessed::occur(['result' => $result]));
+        $this->dispatcher->dispatch(MessageProcessed::occur($result));
 
         return $result;
     }

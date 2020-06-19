@@ -8,14 +8,18 @@ use Interop\Queue\Message;
 
 class MessageReceived extends QueueEvent
 {
-    private Message $message;
-
-    public function message(): Message
+    public static function occur(Message $message): self
     {
-        return $this->message;
-    }
+        $self = new static();
+        $self->payload = [
+            'message_id' => $message->getMessageId(),
+            'headers' => $message->getHeaders(),
+            'body' => $message->getBody(),
+            'properties' => $message->getProperties(),
+            'reply_to' => $message->getReplyTo(),
+            'timestamp' => $message->getTimestamp(),
+        ];
 
-    protected function assertPayload(array $payload): void
-    {
+        return $self;
     }
 }
