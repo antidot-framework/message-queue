@@ -1,0 +1,52 @@
+<?php
+
+declare(strict_types=1);
+
+
+namespace AntidotTest\Queue\Container;
+
+use Antidot\Queue\Container\Config\ConfigProvider;
+use Antidot\Queue\Container\ContextFactory;
+use Enqueue\Fs\FsContext;
+use Enqueue\Null\NullContext;
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+
+use function array_merge;
+
+class ContextFactoryTest extends TestCase
+{
+    public function testItShouldCreateInstancesOfNullContextIdConfigured(): void
+    {
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->once())
+            ->method('get')
+            ->with(ConfigProvider::CONFIG_KEY)
+            ->willReturn(ConfigProvider::DEFAULT_CONFIG);
+
+        $factory = new ContextFactory();
+        $this->assertInstanceOf(NullContext::class, $factory->__invoke($container));
+    }
+
+    public function testItShouldCreateInstancesOfFSContextIdConfigured(): void
+    {
+        $config = array_merge(ConfigProvider::DEFAULT_CONFIG, [
+            'queues' => [
+                'contexts' => [
+                    ConfigProvider::DEFAULT_CONTEXT => [
+                        ConfigProvider::CONTEXTS_TYPE_KEY => 'fs',
+                        'path' => '/tmp/queue',
+                    ],
+                ],
+            ],
+        ]);
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->once())
+            ->method('get')
+            ->with(ConfigProvider::CONFIG_KEY)
+            ->willReturn($config);
+
+        $factory = new ContextFactory();
+        $this->assertInstanceOf(FsContext::class, $factory->__invoke($container));
+    }
+}

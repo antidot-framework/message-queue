@@ -5,7 +5,7 @@
 [![Build Status](https://scrutinizer-ci.com/g/antidot-framework/message-queue/badges/build.png?b=master)](https://scrutinizer-ci.com/g/antidot-framework/message-queue/build-status/master)
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/antidot-framework/message-queue/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 
-Message bus and Pub-Sub implementation using [enqueue/enqueue](https://github.com/php-enqueue/enqueue-dev) for Antidot Framework.
+Message queue implementation using [enqueue/enqueue](https://github.com/php-enqueue/enqueue-dev) for Antidot Framework.
 Check the list of the available extensions at [their docs](https://github.com/php-enqueue/enqueue-dev/blob/master/docs/client/supported_brokers.md).
 
 ## Message Queue
@@ -15,8 +15,12 @@ Check the list of the available extensions at [their docs](https://github.com/ph
 
 ### Different Queue Systems
 
+* Null Queue
 * Filesystem Queue
+* DBAL Queue
 * Redis Queue
+* Beanstalk
+* Amazon SQS
 
 Each implementation will have different configuration details, see concrete documentation section. Furthermore, 
 you can use any of [systems implemented in the php-enqueue package](https://php-enqueue.github.io/transport) making the needed factories.
@@ -124,13 +128,34 @@ parameters:
     contexts:
       default:
         message_types: []
-        context: fs # redis
+        context: fs # redis|dbal|sqs|beanstalk|null
         context_service: queue.context.default
         container: queue.container.default
         extensions:
           - Enqueue\Consumption\Extension\LoggerExtension
           - Enqueue\Consumption\Extension\SignalExtension
           - Enqueue\Consumption\Extension\LogExtension
+```
+
+### Transport specific config
+
+#### Null Queue
+
+So util for testing purposes, it discards any received job. The only configuration required by this transport type is to set it as context.
+
+#### Filesystem Queue
+
+The Filesystem queue stores produced jobs inside a file in memory. It requires the absolute file path to store jobs.
+
+```yaml
+parameters:
+  queues:
+    default_context: default
+    contexts:
+      default:
+        message_types: []
+        context: fs
+        path: /absoute/path/to/writable/file
 ```
 
 ### Consumer
@@ -152,9 +177,11 @@ The Antidot Framework Message Queue uses the [PSR-14 Event Dispatcher]() to allo
 
 ### Extensions
 
+See more about extensions on [php-enqueue official docs](https://php-enqueue.github.io/consumption/extensions/)
+
 #### LogExtension
 
-You can enable or disable debug mode logger in the  config. it uses PSR-3 Logger Interface internally.
+You can enable or disable debug mode logger in the framework default config. it uses PSR-3 Logger Interface internally.
 
 ### Running in Production
 
