@@ -62,6 +62,7 @@
     },
     "suggest": {
         "enqueue/null": "Null queue for testing purposes.",
-        "enqueue/fs": "To use Filesystem queue."
+        "enqueue/fs": "To use Filesystem queue.",
+        "enqueue/dbal": "To use Database queue with dbal connection."
     }
 }

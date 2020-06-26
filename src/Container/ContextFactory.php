@@ -44,7 +44,7 @@ class ContextFactory
         if (self::DBAL === $contextType) {
             Assertion::classExists(
                 DbalContext::class,
-                'Install "enqueue/fs" package to run filesystem context.'
+                'Install "enqueue/dbal" package to run filesystem context.'
             );
             Assertion::keyExists(
                 $contextConfig,
