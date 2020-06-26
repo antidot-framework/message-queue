@@ -42,7 +42,18 @@ class ContextFactory
         }
 
         if (self::DBAL === $contextType) {
-            return new DbalContext($container->get($contextConfig['connection']));
+            Assertion::classExists(
+                DbalContext::class,
+                'Install "enqueue/fs" package to run filesystem context.'
+            );
+            Assertion::keyExists(
+                $contextConfig,
+                'connection',
+                'The "connection" service name is required to run dbal context.'
+            );
+            $context = new DbalContext($container->get($contextConfig['connection']));
+            $context->createDataBaseTable();
+            return $context;
         }
 
         throw new InvalidArgumentException(sprintf('There is not implementation for given context %s.', $contextType));

@@ -158,6 +158,21 @@ parameters:
         path: file:///absoute/path/to/writable/dir
 ```
 
+#### DBAL Queue
+
+The Doctrine Dbal queue stores produced jobs inside a database. It requires the name of the dbal connection service.
+
+```yaml
+parameters:
+  queues:
+    default_context: default
+    contexts:
+      default:
+        message_types: []
+        context_type: dbal
+        connection: Doctrine\DBAL\Connection
+```
+
 ### Consumer
 
 AKA worker, is CLI command responsible to stay listening the given queue to get messages aan process each message one by one. 

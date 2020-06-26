@@ -8,6 +8,7 @@ namespace AntidotTest\Queue\Container;
 use Antidot\Queue\Container\Config\ConfigProvider;
 use Antidot\Queue\Container\ContextFactory;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsContext;
 use Enqueue\Null\NullContext;
@@ -87,11 +88,15 @@ class ContextFactoryTest extends TestCase
                 ],
             ],
         ]);
+        $connection = $this->createMock(Connection::class);
+        $connection->expects($this->once())
+            ->method('getSchemaManager')
+            ->willReturn($this->createMock(AbstractSchemaManager::class));
         $container = $this->createMock(ContainerInterface::class);
         $container->expects($this->exactly(2))
             ->method('get')
             ->withConsecutive([ConfigProvider::CONFIG_KEY], [Connection::class])
-            ->willReturnOnConsecutiveCalls($config, $this->createMock(Connection::class));
+            ->willReturnOnConsecutiveCalls($config, $connection);
 
         $factory = new ContextFactory();
         $this->assertInstanceOf(DbalContext::class, $factory->__invoke($container));
