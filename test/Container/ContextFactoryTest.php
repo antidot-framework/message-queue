@@ -12,6 +12,7 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsContext;
 use Enqueue\Null\NullContext;
+use Enqueue\Redis\RedisContext;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -23,15 +24,18 @@ class ContextFactoryTest extends TestCase
     public function testItShouldThrowAnExceptionIfGivenContextTypeHasNotImplementation(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $config = array_merge(ConfigProvider::DEFAULT_CONFIG, [
-            'queues' => [
-                'contexts' => [
-                    ConfigProvider::DEFAULT_CONTEXT => [
-                        ConfigProvider::CONTEXTS_TYPE_KEY => 'amqp',
+        $config = array_merge(
+            ConfigProvider::DEFAULT_CONFIG,
+            [
+                'queues' => [
+                    'contexts' => [
+                        ConfigProvider::DEFAULT_CONTEXT => [
+                            ConfigProvider::CONTEXTS_TYPE_KEY => 'amqp',
+                        ],
                     ],
                 ],
-            ],
-        ]);
+            ]
+        );
         $container = $this->createMock(ContainerInterface::class);
         $container->expects($this->once())
             ->method('get')
@@ -56,16 +60,21 @@ class ContextFactoryTest extends TestCase
 
     public function testItShouldCreateInstancesOfFSContextIdConfigured(): void
     {
-        $config = array_merge(ConfigProvider::DEFAULT_CONFIG, [
-            'queues' => [
-                'contexts' => [
-                    ConfigProvider::DEFAULT_CONTEXT => [
-                        ConfigProvider::CONTEXTS_TYPE_KEY => 'fs',
-                        'path' => '/tmp/queue',
+        $config = array_merge(
+            ConfigProvider::DEFAULT_CONFIG,
+            [
+                'queues' => [
+                    'contexts' => [
+                        ConfigProvider::DEFAULT_CONTEXT => [
+                            ConfigProvider::CONTEXTS_TYPE_KEY => 'fs',
+                            'context_params' => [
+                                'path' => '/tmp/queue',
+                            ]
+                        ],
                     ],
                 ],
-            ],
-        ]);
+            ]
+        );
         $container = $this->createMock(ContainerInterface::class);
         $container->expects($this->once())
             ->method('get')
@@ -78,16 +87,21 @@ class ContextFactoryTest extends TestCase
 
     public function testItShouldCreateInstancesOfDBALContextIdConfigured(): void
     {
-        $config = array_merge(ConfigProvider::DEFAULT_CONFIG, [
-            'queues' => [
-                'contexts' => [
-                    ConfigProvider::DEFAULT_CONTEXT => [
-                        ConfigProvider::CONTEXTS_TYPE_KEY => 'dbal',
-                        'connection' => Connection::class,
+        $config = array_merge(
+            ConfigProvider::DEFAULT_CONFIG,
+            [
+                'queues' => [
+                    'contexts' => [
+                        ConfigProvider::DEFAULT_CONTEXT => [
+                            ConfigProvider::CONTEXTS_TYPE_KEY => 'dbal',
+                            'context_params' => [
+                                'connection' => Connection::class,
+                            ]
+                        ],
                     ],
                 ],
-            ],
-        ]);
+            ]
+        );
         $connection = $this->createMock(Connection::class);
         $connection->expects($this->once())
             ->method('getSchemaManager')
@@ -100,5 +114,34 @@ class ContextFactoryTest extends TestCase
 
         $factory = new ContextFactory();
         $this->assertInstanceOf(DbalContext::class, $factory->__invoke($container));
+    }
+
+    public function testItShouldCreateInstancesOfRedisContextIdConfigured(): void
+    {
+        $config = array_merge(
+            ConfigProvider::DEFAULT_CONFIG,
+            [
+                'queues' => [
+                    'contexts' => [
+                        ConfigProvider::DEFAULT_CONTEXT => [
+                            ConfigProvider::CONTEXTS_TYPE_KEY => 'redis',
+                            'context_params' => [
+                                'host' => 'localhost',
+                                'port' => 6379,
+                                'scheme_extensions' => ['predis'],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->once())
+            ->method('get')
+            ->with(ConfigProvider::CONFIG_KEY)
+            ->willReturn($config);
+
+        $factory = new ContextFactory();
+        $this->assertInstanceOf(RedisContext::class, $factory->__invoke($container));
     }
 }

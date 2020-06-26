@@ -6,7 +6,6 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/antidot-framework/message-queue/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 
 Message queue implementation using [enqueue/enqueue](https://github.com/php-enqueue/enqueue-dev) for Antidot Framework.
-Check the list of the available extensions at [their docs](https://github.com/php-enqueue/enqueue-dev/blob/master/docs/client/supported_brokers.md).
 
 ## Message Queue
 
@@ -139,9 +138,17 @@ parameters:
 
 So util for testing purposes, it discards any received job. The only configuration required by this transport type is to set it as context.
 
+```bash
+composer require enqueue/null
+```
+
 #### Filesystem Queue
 
 The Filesystem queue stores produced jobs inside a file in memory. It requires the absolute file path to store the jobs.
+
+```bash
+composer require enqueue/fs
+```
 
 ```yaml
 parameters:
@@ -151,12 +158,17 @@ parameters:
       default:
         message_types: []
         context_type: fs
-        path: file:///absoute/path/to/writable/dir
+        context_params:
+          path: file:///absoute/path/to/writable/dir
 ```
 
 #### DBAL Queue
 
 The Doctrine DBAL queue stores produced jobs inside a database. It requires the name of the DBAL connection service.
+
+```bash
+composer require enqueue/dbal
+```
 
 ```yaml
 parameters:
@@ -166,7 +178,54 @@ parameters:
       default:
         message_types: []
         context_type: dbal
-        connection: Doctrine\DBAL\Connection
+        context_params:
+          connection: Doctrine\DBAL\Connection
+```
+
+#### Redis Queue
+
+The redis queue stores produced jobs inside a redis database. It requires the redis connection params.
+You can use it with [Predis](https://github.com/nrk/predis) or with the [PHP Redis extension](https://github.com/phpredis/phpredis).
+
+With Predis:
+  
+```bash
+composer require enqueue/redis predis/predis:^1
+```
+
+```yaml
+parameters:
+  queues:
+    default_context: default
+    contexts:
+      default:
+        message_types: []
+        context_type: redis
+        context_params:
+            host: localhost
+            port: 6379
+            scheme_extensions: ['predis'],
+```
+
+With PHP extension:
+ 
+Ensure that you have PHP Redis extension installed and enabled
+   
+```bash
+composer require enqueue/redis
+```
+
+```yaml
+parameters:
+  queues:
+    default_context: default
+    contexts:
+      default:
+        message_types: []
+        context_type: redis
+            host: localhost
+            port: 6379
+            scheme_extensions: ['phpredis'],
 ```
 
 ### Consumer

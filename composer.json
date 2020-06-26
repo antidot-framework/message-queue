@@ -25,6 +25,7 @@
         "enqueue/dbal": "^0.10.1",
         "enqueue/fs": "^0.10.1",
         "enqueue/null": "^0.10.1",
+        "enqueue/redis": "^0.10.1",
         "phpro/grumphp": "^0.15.0",
         "phpstan/phpstan": "^0.11.5",
         "phpunit/phpunit": "^8.0",
