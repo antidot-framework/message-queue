@@ -189,6 +189,17 @@ In production environment, you usually need some type of daemon to keep the cons
 
 ##### Supervisor
 
-#### Filesystem Config
+You need to install [supervidor](http://supervisord.org/installing.html) in your system. Then you need to configure the consumer as a supervisor job.
 
-#### Redis Config
+```bash
+[program:laravel-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /absolute/path/to/app/bin/console queue:start QUEUE_NAME
+autostart=true
+autorestart=true
+user=ubuntu
+numprocs=2 # Be cautious, it will block your computer depending on the available simultaneous execution thread it has.
+redirect_stderr=true
+stdout_logfile=/absolute/path/to/app/var/log/worker.log
+stopwaitsecs=3600
+```
