@@ -155,7 +155,7 @@ parameters:
       default:
         message_types: []
         context: fs
-        path: /absoute/path/to/writable/file
+        path: /absoute/path/to/writable/dir
 ```
 
 ### Consumer

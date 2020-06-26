@@ -6,6 +6,7 @@ namespace Antidot\Queue\Container\Config;
 
 use Antidot\Queue\Cli\StartQueueConsumer;
 use Antidot\Queue\Container\ActionContainerFactory;
+use Antidot\Queue\Container\ContextFactory;
 use Antidot\Queue\Container\LoggerExtensionFactory;
 use Antidot\Queue\Container\MessageProcessorFactory;
 use Antidot\Queue\Container\ProducerFactory;
@@ -62,12 +63,12 @@ class ConfigProvider
         ],
         'factories' => [
             self::DEFAULT_CONTAINER_SERVICE => ActionContainerFactory::class,
+            self::DEFAULT_CONTEXT_SERVICE => ContextFactory::class,
             Processor::class => MessageProcessorFactory::class,
             Producer::class => ProducerFactory::class,
             LoggerExtension::class => LoggerExtensionFactory::class,
         ],
         'services' => [
-            self::DEFAULT_CONTEXT_SERVICE => NullContext::class,
             Context::class => self::DEFAULT_CONTEXT_SERVICE,
             SignalExtension::class => SignalExtension::class,
             LogExtension::class => LogExtension::class,
