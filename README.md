@@ -128,7 +128,7 @@ parameters:
     contexts:
       default:
         message_types: []
-        context: fs # redis|dbal|sqs|beanstalk|null
+        context_type: fs # redis|dbal|sqs|beanstalk|null
         context_service: queue.context.default
         container: queue.container.default
         extensions:
@@ -154,8 +154,8 @@ parameters:
     contexts:
       default:
         message_types: []
-        context: fs
-        path: /absoute/path/to/writable/dir
+        context_type: fs
+        path: file:///absoute/path/to/writable/dir
 ```
 
 ### Consumer
