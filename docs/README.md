@@ -240,11 +240,12 @@ bin/console queue:start queue_name
 
 ### Events
 
-The Antidot Framework Message Queue uses the [PSR-14 Event Dispatcher]() to allow listening different instant occurred in the queue execution:
+The Antidot Framework Message Queue uses the [PSR-14 Event Dispatcher](https://www.php-fig.org/psr/psr-14/) to allow listening different instant occurred in the queue execution:
 
-* **QueueConsumeWasStarted:**
-* **MessageReceived:**
-* **MessageProcessed:**
+* **QueueConsumeWasStarted:** Dispatches on queue start.
+* **MessageReceived:** Dispatches for any received job before process.
+* **MessageProcessed:** Dispatches after the job processed, it will have the result of the process.
+
 
 ### Extensions
 
