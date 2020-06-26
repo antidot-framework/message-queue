@@ -58,5 +58,9 @@
         "laminas": {
             "config-provider": "Antidot\\Queue\\Container\\Config\\ConfigProvider"
         }
+    },
+    "suggest": {
+        "enqueue/null": "Null queue for testing purposes.",
+        "enqueue/fs": "To use Filesystem queue."
     }
 }
