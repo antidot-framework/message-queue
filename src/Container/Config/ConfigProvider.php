@@ -19,6 +19,7 @@ use Enqueue\Consumption\Extension\LoggerExtension;
 use Enqueue\Consumption\Extension\SignalExtension;
 use Enqueue\Consumption\QueueConsumerInterface;
 use Enqueue\Null\NullContext;
+use Interop\Queue\Context;
 use Interop\Queue\Processor;
 use InvalidArgumentException;
 
@@ -67,6 +68,7 @@ class ConfigProvider
         ],
         'services' => [
             self::DEFAULT_CONTEXT_SERVICE => NullContext::class,
+            Context::class => self::DEFAULT_CONTEXT_SERVICE,
             SignalExtension::class => SignalExtension::class,
             LogExtension::class => LogExtension::class,
         ],
