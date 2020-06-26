@@ -9,6 +9,7 @@ use Antidot\Queue\Container\Config\ConfigProvider;
 use Antidot\Queue\Container\ContextFactory;
 use Enqueue\Fs\FsContext;
 use Enqueue\Null\NullContext;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
@@ -16,6 +17,28 @@ use function array_merge;
 
 class ContextFactoryTest extends TestCase
 {
+    public function testItShouldThrowAnExceptionIfGivenContextTypeHasNotImplementation(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $config = array_merge(ConfigProvider::DEFAULT_CONFIG, [
+            'queues' => [
+                'contexts' => [
+                    ConfigProvider::DEFAULT_CONTEXT => [
+                        ConfigProvider::CONTEXTS_TYPE_KEY => 'amqp',
+                    ],
+                ],
+            ],
+        ]);
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->once())
+            ->method('get')
+            ->with(ConfigProvider::CONFIG_KEY)
+            ->willReturn($config);
+
+        $factory = new ContextFactory();
+        $factory->__invoke($container);
+    }
+
     public function testItShouldCreateInstancesOfNullContextIdConfigured(): void
     {
         $container = $this->createMock(ContainerInterface::class);
