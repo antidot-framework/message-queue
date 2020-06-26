@@ -205,7 +205,7 @@ parameters:
         context_params:
             host: localhost
             port: 6379
-            scheme_extensions: ['predis'],
+            scheme_extensions: ['predis']
 ```
 
 With PHP extension:
@@ -226,7 +226,7 @@ parameters:
         context_type: redis
             host: localhost
             port: 6379
-            scheme_extensions: ['phpredis'],
+            scheme_extensions: ['phpredis']
 ```
 
 ### Consumer
