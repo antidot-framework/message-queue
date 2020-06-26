@@ -22,6 +22,7 @@
         "psr/event-dispatcher": "^1.0"
     },
     "require-dev": {
+        "enqueue/dbal": "^0.10.1",
         "enqueue/fs": "^0.10.1",
         "enqueue/null": "^0.10.1",
         "phpro/grumphp": "^0.15.0",

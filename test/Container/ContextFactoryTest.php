@@ -7,6 +7,8 @@ namespace AntidotTest\Queue\Container;
 
 use Antidot\Queue\Container\Config\ConfigProvider;
 use Antidot\Queue\Container\ContextFactory;
+use Doctrine\DBAL\Connection;
+use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsContext;
 use Enqueue\Null\NullContext;
 use InvalidArgumentException;
@@ -71,5 +73,27 @@ class ContextFactoryTest extends TestCase
 
         $factory = new ContextFactory();
         $this->assertInstanceOf(FsContext::class, $factory->__invoke($container));
+    }
+
+    public function testItShouldCreateInstancesOfDBALContextIdConfigured(): void
+    {
+        $config = array_merge(ConfigProvider::DEFAULT_CONFIG, [
+            'queues' => [
+                'contexts' => [
+                    ConfigProvider::DEFAULT_CONTEXT => [
+                        ConfigProvider::CONTEXTS_TYPE_KEY => 'dbal',
+                        'connection' => Connection::class,
+                    ],
+                ],
+            ],
+        ]);
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->exactly(2))
+            ->method('get')
+            ->withConsecutive([ConfigProvider::CONFIG_KEY], [Connection::class])
+            ->willReturnOnConsecutiveCalls($config, $this->createMock(Connection::class));
+
+        $factory = new ContextFactory();
+        $this->assertInstanceOf(DbalContext::class, $factory->__invoke($container));
     }
 }

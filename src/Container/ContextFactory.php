@@ -6,6 +6,7 @@ namespace Antidot\Queue\Container;
 
 use Antidot\Queue\Container\Config\ConfigProvider;
 use Assert\Assertion;
+use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsConnectionFactory;
 use Enqueue\Null\NullContext;
 use Interop\Queue\Context;
@@ -18,6 +19,7 @@ class ContextFactory
 {
     private const NULL = 'null';
     private const FILESYSTEM = 'fs';
+    private const DBAL = 'dbal';
 
     public function __invoke(
         ContainerInterface $container,
@@ -37,6 +39,10 @@ class ContextFactory
             );
             Assertion::keyExists($contextConfig, 'path', 'Absolute "path" is required to run filesystem context.');
             return (new FsConnectionFactory($contextConfig['path']))->createContext();
+        }
+
+        if (self::DBAL === $contextType) {
+            return new DbalContext($container->get($contextConfig['connection']));
         }
 
         throw new InvalidArgumentException(sprintf('There is not implementation for given context %s.', $contextType));
