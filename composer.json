@@ -26,6 +26,7 @@
         "enqueue/fs": "^0.10.1",
         "enqueue/null": "^0.10.1",
         "enqueue/redis": "^0.10.1",
+        "enqueue/sqs": "^0.10.1",
         "phpro/grumphp": "^0.15.0",
         "phpstan/phpstan": "^0.11.5",
         "phpunit/phpunit": "^8.0",
@@ -64,6 +65,8 @@
     "suggest": {
         "enqueue/null": "Null queue for testing purposes.",
         "enqueue/fs": "To use Filesystem queue.",
-        "enqueue/dbal": "To use Database queue with dbal connection."
+        "enqueue/dbal": "To use Database queue with dbal connection.",
+        "enqueue/redis": "To use queue with Redis connection.",
+        "enqueue/sqs": "To use queue with AWS SQS service."
     }
 }

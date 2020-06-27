@@ -13,6 +13,7 @@ use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsContext;
 use Enqueue\Null\NullContext;
 use Enqueue\Redis\RedisContext;
+use Enqueue\Sqs\SqsContext;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -31,6 +32,7 @@ class ContextFactoryTest extends TestCase
                     'contexts' => [
                         ConfigProvider::DEFAULT_CONTEXT => [
                             ConfigProvider::CONTEXTS_TYPE_KEY => 'amqp',
+                            'context_params' => [],
                         ],
                     ],
                 ],
@@ -46,7 +48,7 @@ class ContextFactoryTest extends TestCase
         $factory->__invoke($container);
     }
 
-    public function testItShouldCreateInstancesOfNullContextIdConfigured(): void
+    public function testItShouldCreateInstancesOfNullContextIfConfigured(): void
     {
         $container = $this->createMock(ContainerInterface::class);
         $container->expects($this->once())
@@ -58,7 +60,7 @@ class ContextFactoryTest extends TestCase
         $this->assertInstanceOf(NullContext::class, $factory->__invoke($container));
     }
 
-    public function testItShouldCreateInstancesOfFSContextIdConfigured(): void
+    public function testItShouldCreateInstancesOfFSContextIfConfigured(): void
     {
         $config = array_merge(
             ConfigProvider::DEFAULT_CONFIG,
@@ -85,7 +87,7 @@ class ContextFactoryTest extends TestCase
         $this->assertInstanceOf(FsContext::class, $factory->__invoke($container));
     }
 
-    public function testItShouldCreateInstancesOfDBALContextIdConfigured(): void
+    public function testItShouldCreateInstancesOfDBALContextIfConfigured(): void
     {
         $config = array_merge(
             ConfigProvider::DEFAULT_CONFIG,
@@ -116,7 +118,7 @@ class ContextFactoryTest extends TestCase
         $this->assertInstanceOf(DbalContext::class, $factory->__invoke($container));
     }
 
-    public function testItShouldCreateInstancesOfRedisContextIdConfigured(): void
+    public function testItShouldCreateInstancesOfRedisContextIfConfigured(): void
     {
         $config = array_merge(
             ConfigProvider::DEFAULT_CONFIG,
@@ -143,5 +145,34 @@ class ContextFactoryTest extends TestCase
 
         $factory = new ContextFactory();
         $this->assertInstanceOf(RedisContext::class, $factory->__invoke($container));
+    }
+
+    public function testItShouldCreateInstancesOfSQSContextIfConfigured(): void
+    {
+        $config = array_merge(
+            ConfigProvider::DEFAULT_CONFIG,
+            [
+                'queues' => [
+                    'contexts' => [
+                        ConfigProvider::DEFAULT_CONTEXT => [
+                            ConfigProvider::CONTEXTS_TYPE_KEY => 'sqs',
+                            'context_params' => [
+                                'key' => 'AWS-KEY',
+                                'secret' => 'AWS-SECRET',
+                                'region' => 'eu-west-3',
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->once())
+            ->method('get')
+            ->with(ConfigProvider::CONFIG_KEY)
+            ->willReturn($config);
+
+        $factory = new ContextFactory();
+        $this->assertInstanceOf(SqsContext::class, $factory->__invoke($container));
     }
 }

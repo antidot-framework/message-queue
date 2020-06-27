@@ -10,6 +10,7 @@ use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsConnectionFactory;
 use Enqueue\Null\NullContext;
 use Enqueue\Redis\RedisConnectionFactory;
+use Enqueue\Sqs\SqsConnectionFactory;
 use Interop\Queue\Context;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -23,6 +24,7 @@ class ContextFactory
     private const FILESYSTEM = 'fs';
     private const DBAL = 'dbal';
     private const REDIS = 'redis';
+    private const SQS = 'sqs';
 
     public function __invoke(
         ContainerInterface $container,
@@ -48,6 +50,10 @@ class ContextFactory
             return $this->createRedisContext($contextConfig['context_params']);
         }
 
+        if (self::SQS === $contextType) {
+            return $this->createSQSContext($contextConfig['context_params']);
+        }
+
         throw new InvalidArgumentException(sprintf('There is not implementation for given context %s.', $contextType));
     }
 
@@ -66,7 +72,7 @@ class ContextFactory
     {
         Assertion::classExists(
             DbalContext::class,
-            'Install "enqueue/dbal" package to run filesystem context.'
+            'Install "enqueue/dbal" package to run Doctrine DBAL context.'
         );
         Assertion::keyExists(
             $contextConfig,
@@ -83,7 +89,7 @@ class ContextFactory
     {
         Assertion::classExists(
             RedisConnectionFactory::class,
-            'Install "enqueue/redis" package to run filesystem context.'
+            'Install "enqueue/redis" package to run redis context.'
         );
         Assertion::keyExists(
             $contextConfig,
@@ -102,5 +108,30 @@ class ContextFactory
         );
 
         return (new RedisConnectionFactory($contextConfig))->createContext();
+    }
+
+    private function createSQSContext($contextConfig): Context
+    {
+        Assertion::classExists(
+            SqsConnectionFactory::class,
+            'Install "enqueue/sqs" package to run Amazon SQS context.'
+        );
+        Assertion::keyExists(
+            $contextConfig,
+            'key',
+            'The AWS "key" is required to run Amazon SQS context.'
+        );
+        Assertion::keyExists(
+            $contextConfig,
+            'secret',
+            'The AWS "secret" is required to run Amazon SQS context.'
+        );
+        Assertion::keyExists(
+            $contextConfig,
+            'region',
+            'The AWS "region" is required to run Amazon SQS context.'
+        );
+
+        return (new SqsConnectionFactory($contextConfig))->createContext();
     }
 }

@@ -228,6 +228,27 @@ parameters:
             scheme_extensions: ['phpredis']
 ```
 
+#### Amazon SQS Queue
+
+The Amazon SQS queue stores produced jobs at aws. It requires the AWS console credentials. 
+You can use both [standard and FIFO queues](https://aws.amazon.com/es/sqs/) depending on your requirements. The queue must exist in AWS before sending a Job to work.
+
+```bash
+composer require enqueue/sqs
+```
+
+```yaml
+parameters:
+  queues:
+    default_context: default
+    contexts:
+      default:
+        message_types: []
+        context_type: sqs
+        context_params:
+          connection: Doctrine\DBAL\Connection
+```
+
 ### Consumer
 
 The worker is the CLI command responsible for listening to the given queue to get messages and process each message one by one. 
