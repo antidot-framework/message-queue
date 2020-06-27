@@ -12,6 +12,7 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsContext;
 use Enqueue\Null\NullContext;
+use Enqueue\Pheanstalk\PheanstalkContext;
 use Enqueue\Redis\RedisContext;
 use Enqueue\Sqs\SqsContext;
 use InvalidArgumentException;
@@ -145,6 +146,34 @@ class ContextFactoryTest extends TestCase
 
         $factory = new ContextFactory();
         $this->assertInstanceOf(RedisContext::class, $factory->__invoke($container));
+    }
+
+    public function testItShouldCreateInstancesOfBeanstalkContextIfConfigured(): void
+    {
+        $config = array_merge(
+            ConfigProvider::DEFAULT_CONFIG,
+            [
+                'queues' => [
+                    'contexts' => [
+                        ConfigProvider::DEFAULT_CONTEXT => [
+                            ConfigProvider::CONTEXTS_TYPE_KEY => 'beanstalk',
+                            'context_params' => [
+                                'host' => 'localhost',
+                                'port' => 5555,
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+        $container = $this->createMock(ContainerInterface::class);
+        $container->expects($this->once())
+            ->method('get')
+            ->with(ConfigProvider::CONFIG_KEY)
+            ->willReturn($config);
+
+        $factory = new ContextFactory();
+        $this->assertInstanceOf(PheanstalkContext::class, $factory->__invoke($container));
     }
 
     public function testItShouldCreateInstancesOfSQSContextIfConfigured(): void

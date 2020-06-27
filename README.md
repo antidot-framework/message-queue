@@ -228,6 +228,27 @@ parameters:
             scheme_extensions: ['phpredis']
 ```
 
+#### Beanstalk Queue
+
+The Beanstalk queue requires the beanstal host and beanstalk port to work. It uses Pheanstalk PHP library.
+
+```bash
+composer require enqueue/pheanstalk
+```
+
+```yaml
+parameters:
+  queues:
+    default_context: default
+    contexts:
+      default:
+        message_types: []
+        context_type: beanstalk
+        context_params:
+          host: localhost
+          port: 5555
+```
+
 #### Amazon SQS Queue
 
 The Amazon SQS queue stores produced jobs at aws. It requires the AWS console credentials. 

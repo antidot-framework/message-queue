@@ -9,13 +9,13 @@ use Assert\Assertion;
 use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsConnectionFactory;
 use Enqueue\Null\NullContext;
+use Enqueue\Pheanstalk\PheanstalkConnectionFactory;
 use Enqueue\Redis\RedisConnectionFactory;
 use Enqueue\Sqs\SqsConnectionFactory;
 use Interop\Queue\Context;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
-use function array_key_exists;
 use function sprintf;
 
 class ContextFactory
@@ -25,6 +25,7 @@ class ContextFactory
     private const DBAL = 'dbal';
     private const REDIS = 'redis';
     private const SQS = 'sqs';
+    private const BEANSTALK = 'beanstalk';
 
     public function __invoke(
         ContainerInterface $container,
@@ -48,6 +49,10 @@ class ContextFactory
 
         if (self::REDIS === $contextType) {
             return $this->createRedisContext($contextConfig['context_params']);
+        }
+
+        if (self::BEANSTALK === $contextType) {
+            return $this->createBeanstalkContext($contextConfig['context_params']);
         }
 
         if (self::SQS === $contextType) {
@@ -110,7 +115,7 @@ class ContextFactory
         return (new RedisConnectionFactory($contextConfig))->createContext();
     }
 
-    private function createSQSContext($contextConfig): Context
+    private function createSQSContext(array $contextConfig): Context
     {
         Assertion::classExists(
             SqsConnectionFactory::class,
@@ -133,5 +138,25 @@ class ContextFactory
         );
 
         return (new SqsConnectionFactory($contextConfig))->createContext();
+    }
+
+    private function createBeanstalkContext(array $contextConfig): Context
+    {
+        Assertion::classExists(
+            RedisConnectionFactory::class,
+            'Install "enqueue/pheanstalk" package to run beanstalk context.'
+        );
+        Assertion::keyExists(
+            $contextConfig,
+            'host',
+            'The "host" name is required to run beanstalk context.'
+        );
+        Assertion::keyExists(
+            $contextConfig,
+            'port',
+            'The "port" is required to run beanstalk context.'
+        );
+
+        return (new PheanstalkConnectionFactory($contextConfig))->createContext();
     }
 }
