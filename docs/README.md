@@ -247,7 +247,9 @@ parameters:
         message_types: []
         context_type: sqs
         context_params:
-          connection: Doctrine\DBAL\Connection
+          key: AWS-KEY
+          secret: AWS-SECRET
+          region: eu-west-3
 ```
 
 ### Consumer
