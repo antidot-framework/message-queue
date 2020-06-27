@@ -247,7 +247,7 @@ parameters:
         context_type: beanstalk
         context_params:
           host: localhost
-          port: 5555
+          port: 11300
 ```
 
 #### Amazon SQS Queue
