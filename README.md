@@ -7,6 +7,10 @@
 
 Message queue implementation using [enqueue/enqueue](https://github.com/php-enqueue/enqueue-dev) for Antidot Framework.
 
+```bash
+composer require antidot-fw/message-queue
+```
+
 ## Message Queue
 
 > A message queue is an asynchronous communication method. It allows storing messages in the queue system until they are consumed and destroyed. 
