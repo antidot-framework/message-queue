@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.1](https://github.com/antidot-framework/message-queue/tree/HEAD)
+
+[Full Changelog](https://github.com/antidot-framework/message-queue/compare/0.1.0...HEAD)
+
+**Merged pull requests:**
+
+- Update phpstan/phpstan requirement from ^0.11.5 to ^0.11.5 || ^0.12.0 [\#4](https://github.com/antidot-framework/message-queue/pull/4) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update phpro/grumphp requirement from ^0.15.0 to ^0.15.0 || ^0.19.0 [\#3](https://github.com/antidot-framework/message-queue/pull/3) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update phpunit/phpunit requirement from ^8.0 to ^8.0 || ^9.0 [\#2](https://github.com/antidot-framework/message-queue/pull/2) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update symfony/var-dumper requirement from ^4.2 to ^4.2 || ^5.0 [\#1](https://github.com/antidot-framework/message-queue/pull/1) ([dependabot[bot]](https://github.com/apps/dependabot))
+
 ## [0.1.0](https://github.com/antidot-framework/message-queue/tree/0.1.0) (2020-06-27)
 
 [Full Changelog](https://github.com/antidot-framework/message-queue/compare/fd0a9d4ac07b938911b35a92c5e42b9ced27353e...0.1.0)
