@@ -84,11 +84,19 @@ class ConfigProvider
         ],
     ];
 
+    /**
+     * @return array<mixed>
+     */
     public function __invoke(): array
     {
         return self::DEFAULT_CONFIG;
     }
 
+    /**
+     * @param array<mixed> $config
+     * @return array<mixed>
+     * @throws AssertionFailedException
+     */
     public static function getContextConfig(string $contextName, array $config): array
     {
         ConfigProvider::validate($config);
@@ -103,7 +111,7 @@ class ConfigProvider
 
 
     /**
-     * @param array $config
+     * @param array<mixed> $config
      * @throws AssertionFailedException
      */
     public static function validate(array $config): void
