@@ -62,6 +62,10 @@ class ContextFactory
         throw new InvalidArgumentException(sprintf('There is not implementation for given context %s.', $contextType));
     }
 
+    /**
+     * @param array<mixed> $contextConfig
+     * @throws \Assert\AssertionFailedException
+     */
     private function createFilesystemContext(array $contextConfig): Context
     {
         Assertion::classExists(
@@ -73,6 +77,10 @@ class ContextFactory
         return (new FsConnectionFactory($contextConfig['path']))->createContext();
     }
 
+    /**
+     * @param array<mixed> $contextConfig
+     * @throws \Assert\AssertionFailedException
+     */
     private function createDBALContext(ContainerInterface $container, array $contextConfig): Context
     {
         Assertion::classExists(
@@ -90,6 +98,10 @@ class ContextFactory
         return $context;
     }
 
+    /**
+     * @param array<mixed> $contextConfig
+     * @throws \Assert\AssertionFailedException
+     */
     private function createRedisContext(array $contextConfig): Context
     {
         Assertion::classExists(
@@ -115,6 +127,10 @@ class ContextFactory
         return (new RedisConnectionFactory($contextConfig))->createContext();
     }
 
+    /**
+     * @param array<mixed> $contextConfig
+     * @throws \Assert\AssertionFailedException
+     */
     private function createSQSContext(array $contextConfig): Context
     {
         Assertion::classExists(
@@ -140,6 +156,10 @@ class ContextFactory
         return (new SqsConnectionFactory($contextConfig))->createContext();
     }
 
+    /**
+     * @param array<mixed> $contextConfig
+     * @throws \Assert\AssertionFailedException
+     */
     private function createBeanstalkContext(array $contextConfig): Context
     {
         Assertion::classExists(

@@ -9,12 +9,16 @@ use Psr\EventDispatcher\StoppableEventInterface;
 
 abstract class QueueEvent implements StoppableEventInterface, JsonSerializable
 {
+    /** @var array<mixed>  */
     protected array $payload = [];
 
     public function __construct()
     {
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function payload(): array
     {
         return $this->payload;
@@ -25,6 +29,9 @@ abstract class QueueEvent implements StoppableEventInterface, JsonSerializable
         return false;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function jsonSerialize(): array
     {
         return $this->payload;

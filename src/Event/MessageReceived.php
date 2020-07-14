@@ -6,7 +6,7 @@ namespace Antidot\Queue\Event;
 
 use Interop\Queue\Message;
 
-class MessageReceived extends QueueEvent
+final class MessageReceived extends QueueEvent
 {
     public static function occur(Message $message): self
     {

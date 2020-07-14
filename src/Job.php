@@ -15,6 +15,9 @@ class Job
     {
     }
 
+    /**
+     * @param mixed $messageContent
+     */
     public static function create(string $queueName, string $messageType, $messageContent): self
     {
         $self = new self();

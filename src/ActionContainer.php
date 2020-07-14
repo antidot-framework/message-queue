@@ -12,8 +12,12 @@ use function array_key_exists;
 
 class ActionContainer implements ContainerInterface
 {
+    /** @var array<callable>  */
     private array $actions;
 
+    /**
+     * @param array<callable> $actions
+     */
     public function __construct(array $actions)
     {
         $this->actions = $actions;

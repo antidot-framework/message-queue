@@ -13,9 +13,12 @@ class JobPayload implements JsonSerializable
 {
     public const INVALID_CONTENT_MESSAGE = 'Invalid message content type "%s" given, it must be array or string type.';
     protected string $type;
-    /** @var string|array */
+    /** @var string|array<mixed> */
     protected $message;
 
+    /**
+     * @param string|array<mixed> $messageContent
+     */
     public static function create(string $messageType, $messageContent): self
     {
         $self = new self();
@@ -43,13 +46,16 @@ class JobPayload implements JsonSerializable
     }
 
     /**
-     * @return array|string
+     * @return array<mixed>|string
      */
     public function message()
     {
         return $this->message;
     }
 
+    /**
+     * @param string|array<mixed> $messageContent
+     */
     private function assertValidMessageContent($messageContent): void
     {
         if (is_string($messageContent) || is_array($messageContent)) {
@@ -59,13 +65,20 @@ class JobPayload implements JsonSerializable
         throw new InvalidArgumentException(sprintf(self::INVALID_CONTENT_MESSAGE, gettype($messageContent)));
     }
 
-    private function assertValidMessageData($payload): void
+    /**
+     * @param array<mixed> $payload
+     * @throws \Assert\AssertionFailedException
+     */
+    private function assertValidMessageData(array $payload): void
     {
         Assertion::keyExists($payload, 'type', 'The job payload should have the "type" key.');
         Assertion::string($payload['type'], 'The job payload kay "type" should have a string value.');
         Assertion::keyExists($payload, 'message', 'The job payload should have the "message" key.');
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function jsonSerialize(): array
     {
         return [

@@ -6,7 +6,7 @@ namespace Antidot\Queue\Event;
 
 use Enqueue\Consumption\Result;
 
-class MessageProcessed extends QueueEvent
+final class MessageProcessed extends QueueEvent
 {
     public static function occur(Result $result): self
     {
