@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Antidot\Test\Queue\Container;
+namespace AntidotTest\Queue\Container;
 
 use Antidot\Queue\Container\LoggerExtensionFactory;
 use PHPUnit\Framework\TestCase;

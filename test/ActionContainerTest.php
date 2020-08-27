@@ -45,6 +45,6 @@ class ActionContainerTest extends TestCase
         ];
         $actionContainer = new ActionContainer($actions);
         $callable = $actionContainer->get(self::SOME_ACTION);
-        $this->assertEquals(self::ACTION_INSTANCE_VALUE, $callable());
+        $this->assertSame(self::ACTION_INSTANCE_VALUE, $callable());
     }
 }

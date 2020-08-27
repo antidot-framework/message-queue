@@ -27,7 +27,7 @@ class MessageProcessorTest extends TestCase
     private $actionContainer;
     private $eventDispatcher;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->context = $this->createMock(Context::class);
         $this->message = $this->createMock(Message::class);

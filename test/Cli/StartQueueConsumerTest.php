@@ -19,7 +19,7 @@ class StartQueueConsumerTest extends TestCase
 {
     private $console;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $command = new StartQueueConsumer(
             $this->createMock(QueueConsumerInterface::class),
@@ -52,6 +52,6 @@ class StartQueueConsumerTest extends TestCase
     {
         $output = new BufferedOutput();
         $result = $this->console->run(new ArrayInput(['command' => StartQueueConsumer::NAME, 'queue_name' => 'default']), $output);
-        $this->assertEquals(0, $result);
+        $this->assertSame(0, $result);
     }
 }

@@ -21,14 +21,14 @@ class JobTest extends TestCase
     public function testItShouldBeCreatedWithQueueNameMessageTypeAndMessage(): void
     {
         $job = Job::create(self::SOME_QUEUE_NAME, self::MESSAGE_TYPE, self::MESSAGE_CONTENT);
-        $this->assertEquals(self::SOME_QUEUE_NAME, $job->queueName());
-        $this->assertEquals(self::PAYLOAD, $job->payload());
+        $this->assertSame(self::SOME_QUEUE_NAME, $job->queueName());
+        $this->assertSame(self::PAYLOAD, $job->payload());
     }
 
     public function testItShouldBeCreatedWithQueueNameMessageTypeAndArrayMessage(): void
     {
         $job = Job::create(self::SOME_QUEUE_NAME, self::MESSAGE_TYPE, self::MESSAGE_ARRAY_CONTENT);
-        $this->assertEquals(self::SOME_QUEUE_NAME, $job->queueName());
-        $this->assertEquals(self::ARRAY_PAYLOAD, $job->payload());
+        $this->assertSame(self::SOME_QUEUE_NAME, $job->queueName());
+        $this->assertSame(self::ARRAY_PAYLOAD, $job->payload());
     }
 }
