@@ -18,14 +18,14 @@ class JobPayloadTest extends TestCase
     public function testIsShouldBeCreatedWithStringMessage(): void
     {
         $jobPayload = JobPayload::create(self::MESSAGE_TYPE, self::MESSAGE_CONTENT);
-        $this->assertEquals(self::MESSAGE_TYPE, $jobPayload->type());
-        $this->assertEquals(self::MESSAGE_CONTENT, $jobPayload->message());
+        $this->assertSame(self::MESSAGE_TYPE, $jobPayload->type());
+        $this->assertSame(self::MESSAGE_CONTENT, $jobPayload->message());
     }
 
     public function testIsShouldBeCreatedWithArrayMessage(): void
     {
         $jobPayload = JobPayload::create(self::MESSAGE_TYPE, self::ARRAY_MESSAGE_CONTENT);
-        $this->assertEquals(self::MESSAGE_TYPE, $jobPayload->type());
+        $this->assertSame(self::MESSAGE_TYPE, $jobPayload->type());
         $this->assertEquals(self::ARRAY_MESSAGE_CONTENT, $jobPayload->message());
     }
 
