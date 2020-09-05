@@ -28,7 +28,7 @@
         "enqueue/pheanstalk": "^0.10.2",
         "enqueue/redis": "^0.10.1",
         "enqueue/sqs": "^0.10.1",
-        "phpro/grumphp": "^0.15.0 || ^0.19.0 || ^0.21.0 || ^0.22.0",
+        "phpro/grumphp": "~0.17",
         "phpstan/phpstan": "^0.11.5 || ^0.12.0",
         "phpunit/phpunit": "^8.0 || ^9.0",
         "squizlabs/php_codesniffer": "^3.4",
