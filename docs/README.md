@@ -235,7 +235,7 @@ parameters:
 
 #### Beanstalk Queue
 
-The Beanstalk queue requires the beanstal host and beanstalk port to work. It uses Pheanstalk PHP library.
+The Beanstalk queue requires the beanstalk host and beanstalk port to work. It uses Pheanstalk PHP library.
 
 ```bash
 composer require enqueue/pheanstalk
