@@ -19,24 +19,18 @@ class JobProducerTest extends TestCase
 
     public function testItShouldProduceQueueMessageFromGivenJob(): void
     {
-        $job = $this->createMock(Job::class);
+        $job = Job::create(self::SOME_QUEUE, 'some_type',self::SOME_MESSAGE);
         $queue = $this->createMock(Queue::class);
         $message = $this->createMock(Message::class);
         $producer = $this->createMock(InteropProducer::class);
         $context = $this->createMock(Context::class);
-        $job->expects($this->once())
-            ->method('queueName')
-            ->willReturn(self::SOME_QUEUE);
-        $job->expects($this->once())
-            ->method('payload')
-            ->willReturn(self::SOME_MESSAGE);
         $context->expects($this->once())
             ->method('createQueue')
             ->with(self::SOME_QUEUE)
             ->willReturn($queue);
         $context->expects($this->once())
             ->method('createMessage')
-            ->with(self::SOME_MESSAGE)
+            ->with($job->payload())
             ->willReturn($message);
         $context->expects($this->once())
             ->method('createProducer')

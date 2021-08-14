@@ -25,7 +25,7 @@ class MessageProcessorFactoryTest extends TestCase
             )
             ->willReturnOnConsecutiveCalls(
                 ConfigProvider::DEFAULT_CONFIG,
-                $this->createMock(ActionContainer::class),
+                new ActionContainer([]),
                 $this->createMock(EventDispatcherInterface::class)
             );
         $factory = new MessageProcessorFactory();

@@ -12,6 +12,9 @@ class LoggerExtensionFactory
 {
     public function __invoke(ContainerInterface $container): LoggerExtension
     {
-        return new LoggerExtension($container->get(LoggerInterface::class));
+        /** @var LoggerInterface $logger */
+        $logger = $container->get(LoggerInterface::class);
+
+        return new LoggerExtension($logger);
     }
 }

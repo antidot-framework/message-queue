@@ -13,6 +13,7 @@ use Interop\Queue\Processor;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
+use Webmozart\Assert\Assert;
 
 class MessageProcessor implements Processor
 {
@@ -41,6 +42,7 @@ class MessageProcessor implements Processor
             $jobPayload = JobPayload::createFromMessage($message);
             if ($this->container->has($jobPayload->type())) {
                 $action = $this->container->get($jobPayload->type());
+                Assert::isCallable($action);
                 $action($jobPayload);
                 return Result::ack(sprintf('Message type "%s" routed to action.', $jobPayload->type()));
             }

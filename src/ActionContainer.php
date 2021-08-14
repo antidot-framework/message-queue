@@ -10,7 +10,7 @@ use Psr\Container\ContainerInterface;
 use Throwable;
 use function array_key_exists;
 
-class ActionContainer implements ContainerInterface
+final class ActionContainer implements ContainerInterface
 {
     /** @var array<callable>  */
     private array $actions;
@@ -23,7 +23,7 @@ class ActionContainer implements ContainerInterface
         $this->actions = $actions;
     }
 
-    public function get($id): callable
+    public function get(string $id): callable
     {
         if (false === $this->has($id)) {
             throw ActionNotFoundException::withId($id);
@@ -35,10 +35,14 @@ class ActionContainer implements ContainerInterface
             throw ActionContainerException::withIdAndPreviousException($id, $exception);
         }
 
+        if (false === is_callable($action)) {
+            throw ActionContainerException::withIdAndInvalidCallable($id);
+        }
+
         return $action;
     }
 
-    public function has($id): bool
+    public function has(string $id): bool
     {
         return array_key_exists($id, $this->actions);
     }

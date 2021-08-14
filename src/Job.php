@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace Antidot\Queue;
 
+use InvalidArgumentException;
 use function json_encode;
 
-class Job
+final class Job
 {
     private string $queueName;
     private JobPayload $payload;
 
-    private function __construct()
+    private function __construct(string $queueName, JobPayload $payload)
     {
+        $this->queueName = $queueName;
+        $this->payload = $payload;
     }
 
     /**
@@ -20,11 +23,12 @@ class Job
      */
     public static function create(string $queueName, string $messageType, $messageContent): self
     {
-        $self = new self();
-        $self->queueName = $queueName;
-        $self->payload = JobPayload::create($messageType, $messageContent);
+        if (false === is_array($messageContent) && false === is_string($messageContent)) {
+            throw new InvalidArgumentException('$messageContent must be a string or an array.');
+        }
 
-        return $self;
+        /** @var array<string, mixed>|string $messageContent */
+        return new self($queueName, JobPayload::create($messageType, $messageContent));
     }
 
     public function queueName(): string

@@ -21,11 +21,20 @@ class ActionContainerFactory
         ContainerInterface $container,
         string $contextName = ConfigProvider::DEFAULT_CONTEXT
     ): ActionContainer {
-        $contextConfig = ConfigProvider::getContextConfig($contextName, $container->get(ConfigProvider::CONFIG_KEY));
-        foreach ($contextConfig[ConfigProvider::MESSAGE_TYPES_KEY] ?? [] as $messageType => $action) {
-            $actions[$messageType] = static fn() => $container->get($action);
+        /** @var array<string, array<string, mixed>> $config */
+        $config = $container->get(ConfigProvider::CONFIG_KEY);
+        $contextConfig = ConfigProvider::getContextConfig($contextName, $config);
+        $actions = [];
+        /** @var array<string, string> $messages */
+        $messages = $contextConfig[ConfigProvider::MESSAGE_TYPES_KEY] ?? [];
+        foreach ($messages as $messageType => $action) {
+            $actions[$messageType] = static function () use ($container, $action): callable {
+                /** @var callable $actionCallable */
+                $actionCallable = $container->get($action);
+                return $actionCallable;
+            };
         }
 
-        return new ActionContainer($actions ?? []);
+        return new ActionContainer($actions);
     }
 }
