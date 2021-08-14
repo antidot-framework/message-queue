@@ -28,6 +28,7 @@
         "enqueue/pheanstalk": "^0.10.2",
         "enqueue/redis": "^0.10.1",
         "enqueue/sqs": "^0.10.1",
+        "infection/infection": "^0.24.0",
         "phpro/grumphp": "~0.17 || ~1.0",
         "phpstan/phpstan": "^0.11.5 || ^0.12.0",
         "phpunit/phpunit": "^8.0 || ^9.0",
@@ -48,11 +49,13 @@
         "check-all": [
             "@cs-check",
             "@test",
-            "@inspect"
+            "@inspect",
+            "@infection"
         ],
         "cs-check": "phpcs src --colors",
         "cs-fix": "phpcbf src --colors",
         "inspect": "phpstan analyse src -l7 --ansi",
+        "infection": "XDEBUG_MODE=coverage infection --ansi",
         "test": "phpunit --colors=always"
     },
     "config": {
