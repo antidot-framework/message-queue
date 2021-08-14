@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Antidot\Queue\Cli;
 
 use Antidot\Queue\Event\QueueConsumerStarted;
+use Antidot\Queue\MessageProcessor;
 use Enqueue\Consumption\QueueConsumerInterface;
+use Enqueue\Consumption\Result;
 use Interop\Queue\Context;
 use Interop\Queue\Message;
 use Interop\Queue\Processor;
@@ -56,9 +58,10 @@ class StartQueueConsumer extends Command
             throw new InvalidArgumentException(self::INVALID_NAME_MESSAGE);
         }
         $this->eventDispatcher->dispatch(QueueConsumerStarted::occur($queue));
+        /** @var MessageProcessor $processor */
         $processor = $this->processor;
         $context = $this->context;
-        $callback = static fn(Message $message) => $processor->process($message, $context);
+        $callback = static fn(Message $message): Result => $processor->process($message, $context);
         $this->consumer->bindCallback($queue, $callback);
         $this->consumer->consume();
 

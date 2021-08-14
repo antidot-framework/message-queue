@@ -19,7 +19,7 @@ class MessageProcessorTest extends TestCase
 {
     private const SOME_MESSAGE_TYPE = 'some_message_type';
     private const SOME_MESSAGE = 'Hello World';
-    private const ACTION_EXCEPTION_MESsAGE = 'Action Error Message';
+    private const ACTION_EXCEPTION_MESSAGE = 'Action Error Message';
     private const JSON_MESSAGE = '{"type":"' . self::SOME_MESSAGE_TYPE . '","message":"' . self::SOME_MESSAGE . '"}';
     private const INVALID_FORMAT_MESSAGE = '{"some":"' . self::SOME_MESSAGE_TYPE . '","other":"' . self::SOME_MESSAGE . '"}';
     private $context;
@@ -31,7 +31,7 @@ class MessageProcessorTest extends TestCase
     {
         $this->context = $this->createMock(Context::class);
         $this->message = $this->createMock(Message::class);
-        $this->actionContainer = $this->createMock(ActionContainer::class);
+        $this->actionContainer = new ActionContainer([]);
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $this->eventDispatcher->expects($this->exactly(2))
             ->method('dispatch')
@@ -46,10 +46,6 @@ class MessageProcessorTest extends TestCase
         $this->message->expects($this->atLeastOnce())
             ->method('getBody')
             ->willReturn(self::JSON_MESSAGE);
-        $this->actionContainer->expects($this->once())
-            ->method('has')
-            ->with(self::SOME_MESSAGE_TYPE)
-            ->willReturn(false);
         $messageProcessor = new MessageProcessor($this->actionContainer, $this->eventDispatcher);
         $result = $messageProcessor->process($this->message, $this->context);
         $this->assertStringContainsString(MessageProcessor::ACK, (string)$result);
@@ -60,14 +56,6 @@ class MessageProcessorTest extends TestCase
         $this->message->expects($this->atLeastOnce())
             ->method('getBody')
             ->willReturn(self::JSON_MESSAGE);
-        $this->actionContainer->expects($this->once())
-            ->method('has')
-            ->with(self::SOME_MESSAGE_TYPE)
-            ->willReturn(true);
-        $this->actionContainer->expects($this->once())
-            ->method('get')
-            ->with(self::SOME_MESSAGE_TYPE)
-            ->willReturn(static fn(JobPayload $payload) => $payload->message());
         $messageProcessor = new MessageProcessor($this->actionContainer, $this->eventDispatcher);
         $result = $messageProcessor->process($this->message, $this->context);
         $this->assertStringContainsString(MessageProcessor::ACK, (string)$result);
@@ -85,24 +73,14 @@ class MessageProcessorTest extends TestCase
 
     public function testItShouldRejectMessageWhenActionExecutionFails(): void
     {
+        $actionContainer = new ActionContainer([
+            self::SOME_MESSAGE_TYPE => 'invalid value'
+        ]);
         $this->message->expects($this->atLeastOnce())
             ->method('getBody')
             ->willReturn(self::JSON_MESSAGE);
-        $this->actionContainer->expects($this->once())
-            ->method('has')
-            ->with(self::SOME_MESSAGE_TYPE)
-            ->willReturn(true);
-        $this->actionContainer->expects($this->once())
-            ->method('get')
-            ->with(self::SOME_MESSAGE_TYPE)
-            ->willReturn(
-                static function () {
-                    throw new Exception(self::ACTION_EXCEPTION_MESsAGE);
-                }
-            );
-        $messageProcessor = new MessageProcessor($this->actionContainer, $this->eventDispatcher);
+        $messageProcessor = new MessageProcessor($actionContainer, $this->eventDispatcher);
         $result = $messageProcessor->process($this->message, $this->context);
         $this->assertStringContainsString(MessageProcessor::REJECT, (string)$result);
-        $this->assertStringContainsString(self::ACTION_EXCEPTION_MESsAGE, $result->getReason());
     }
 }

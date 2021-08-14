@@ -8,8 +8,11 @@ use Assert\Assertion;
 use Interop\Queue\Message;
 use InvalidArgumentException;
 use JsonSerializable;
+use function is_array;
+use function is_string;
+use function json_decode;
 
-class JobPayload implements JsonSerializable
+final class JobPayload implements JsonSerializable
 {
     public const INVALID_CONTENT_MESSAGE = 'Invalid message content type "%s" given, it must be array or string type.';
     protected string $type;
@@ -17,27 +20,31 @@ class JobPayload implements JsonSerializable
     protected $message;
 
     /**
-     * @param string|array<mixed> $messageContent
+     * @param string $messageType
+     * @param array<string, mixed>|string $messageContent
+     */
+    private function __construct(string $messageType, $messageContent)
+    {
+        $this->assertValidMessageContent($messageContent);
+        $this->type = $messageType;
+        $this->message = $messageContent;
+    }
+
+    /**
+     * @param string|array<string, mixed> $messageContent
      */
     public static function create(string $messageType, $messageContent): self
     {
-        $self = new self();
-        $self->type = $messageType;
-        $self->assertValidMessageContent($messageContent);
-        $self->message = $messageContent;
-
-        return $self;
+        return new self($messageType, $messageContent);
     }
 
     public static function createFromMessage(Message $message): self
     {
-        $self = new self();
+        /** @var array<string, string> $payload */
         $payload = json_decode($message->getBody(), true, 10, JSON_THROW_ON_ERROR);
-        $self->assertValidMessageData($payload);
-        $self->type = $payload['type'];
-        $self->message = $payload['message'];
+        self::assertValidMessageData($payload);
 
-        return $self;
+        return new self($payload['type'], $payload['message']);
     }
 
     public function type(): string
@@ -54,7 +61,7 @@ class JobPayload implements JsonSerializable
     }
 
     /**
-     * @param string|array<mixed> $messageContent
+     * @param mixed|string|array<mixed> $messageContent
      */
     private function assertValidMessageContent($messageContent): void
     {
@@ -69,7 +76,7 @@ class JobPayload implements JsonSerializable
      * @param array<mixed> $payload
      * @throws \Assert\AssertionFailedException
      */
-    private function assertValidMessageData(array $payload): void
+    private static function assertValidMessageData(array $payload): void
     {
         Assertion::keyExists($payload, 'type', 'The job payload should have the "type" key.');
         Assertion::string($payload['type'], 'The job payload kay "type" should have a string value.');
@@ -77,7 +84,7 @@ class JobPayload implements JsonSerializable
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function jsonSerialize(): array
     {

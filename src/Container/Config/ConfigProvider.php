@@ -93,14 +93,15 @@ class ConfigProvider
     }
 
     /**
-     * @param array<mixed> $config
-     * @return array<mixed>
+     * @param array<string, array<string, mixed>> $config
+     * @return array<string, mixed>
      * @throws AssertionFailedException
      */
     public static function getContextConfig(string $contextName, array $config): array
     {
         ConfigProvider::validate($config);
 
+        /** @var array<string, array<string, mixed>> $contextsConfig */
         $contextsConfig = $config[ConfigProvider::QUEUES_KEY][ConfigProvider::CONTEXTS_KEY];
         if (false === array_key_exists($contextName, $contextsConfig)) {
             throw new InvalidArgumentException(sprintf(ConfigProvider::INVALID_CONTEXT_MESSAGE, $contextName));

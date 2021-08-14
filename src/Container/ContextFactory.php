@@ -6,6 +6,7 @@ namespace Antidot\Queue\Container;
 
 use Antidot\Queue\Container\Config\ConfigProvider;
 use Assert\Assertion;
+use Doctrine\DBAL\Connection;
 use Enqueue\Dbal\DbalContext;
 use Enqueue\Fs\FsConnectionFactory;
 use Enqueue\Null\NullContext;
@@ -31,32 +32,37 @@ class ContextFactory
         ContainerInterface $container,
         string $contextName = ConfigProvider::DEFAULT_CONTEXT
     ): Context {
-        $contextConfig = ConfigProvider::getContextConfig($contextName, $container->get(ConfigProvider::CONFIG_KEY));
+        /** @var array<string, array<string, mixed>> $config */
+        $config = $container->get(ConfigProvider::CONFIG_KEY);
+        $contextConfig = ConfigProvider::getContextConfig($contextName, $config);
 
+        /** @var string $contextType */
         $contextType = $contextConfig[ConfigProvider::CONTEXTS_TYPE_KEY];
         if (self::NULL === $contextType) {
             return new NullContext();
         }
 
         Assertion::keyExists($contextConfig, 'context_params');
+        /** @var array<string, mixed> $contextParams */
+        $contextParams = $contextConfig['context_params'];
         if (self::FILESYSTEM === $contextType) {
-            return $this->createFilesystemContext($contextConfig['context_params']);
+            return $this->createFilesystemContext($contextParams);
         }
 
         if (self::DBAL === $contextType) {
-            return $this->createDBALContext($container, $contextConfig['context_params']);
+            return $this->createDBALContext($container, $contextParams);
         }
 
         if (self::REDIS === $contextType) {
-            return $this->createRedisContext($contextConfig['context_params']);
+            return $this->createRedisContext($contextParams);
         }
 
         if (self::BEANSTALK === $contextType) {
-            return $this->createBeanstalkContext($contextConfig['context_params']);
+            return $this->createBeanstalkContext($contextParams);
         }
 
         if (self::SQS === $contextType) {
-            return $this->createSQSContext($contextConfig['context_params']);
+            return $this->createSQSContext($contextParams);
         }
 
         throw new InvalidArgumentException(sprintf('There is not implementation for given context %s.', $contextType));
@@ -73,8 +79,10 @@ class ContextFactory
             'Install "enqueue/fs" package to run filesystem context.'
         );
         Assertion::keyExists($contextConfig, 'path', 'Absolute "path" is required to run filesystem context.');
+        $contextPath = $contextConfig['path'];
+        Assertion::string($contextPath, 'Absolute "path" must be string.');
 
-        return (new FsConnectionFactory($contextConfig['path']))->createContext();
+        return (new FsConnectionFactory($contextPath))->createContext();
     }
 
     /**
@@ -92,7 +100,11 @@ class ContextFactory
             'connection',
             'The "connection" service name is required to run dbal context.'
         );
-        $context = new DbalContext($container->get($contextConfig['connection']));
+        /** @var string $connectionName */
+        $connectionName = $contextConfig['connection'];
+        /** @var Connection $connection */
+        $connection = $container->get($connectionName);
+        $context = new DbalContext($connection);
         $context->createDataBaseTable();
 
         return $context;
