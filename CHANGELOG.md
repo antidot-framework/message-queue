@@ -1,8 +1,26 @@
 # Changelog
 
-## [0.1.1](https://github.com/antidot-framework/message-queue/tree/HEAD)
+## [1.0.0](https://github.com/antidot-framework/message-queue/tree/1.0.0) (2021-09-14)
 
-[Full Changelog](https://github.com/antidot-framework/message-queue/compare/0.1.0...HEAD)
+[Full Changelog](https://github.com/antidot-framework/message-queue/compare/0.1.1...1.0.0)
+
+**Merged pull requests:**
+
+- add sepherd badges [\#16](https://github.com/antidot-framework/message-queue/pull/16) ([kpicaza](https://github.com/kpicaza))
+- install psalm in level 1 [\#15](https://github.com/antidot-framework/message-queue/pull/15) ([kpicaza](https://github.com/kpicaza))
+- install infection [\#14](https://github.com/antidot-framework/message-queue/pull/14) ([kpicaza](https://github.com/kpicaza))
+- enable php 8 support [\#13](https://github.com/antidot-framework/message-queue/pull/13) ([kpicaza](https://github.com/kpicaza))
+- enable testing pipeline in github actions [\#12](https://github.com/antidot-framework/message-queue/pull/12) ([kpicaza](https://github.com/kpicaza))
+- add favicon to the docs site [\#11](https://github.com/antidot-framework/message-queue/pull/11) ([kpicaza](https://github.com/kpicaza))
+- Fix some type & add twitter card info [\#10](https://github.com/antidot-framework/message-queue/pull/10) ([kpicaza](https://github.com/kpicaza))
+- Update phpro/grumphp requirement from ~0.17 to ~0.17 || ~1.0 [\#9](https://github.com/antidot-framework/message-queue/pull/9) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update phpro/grumphp requirement from ^0.15.0 || ^0.19.0 || ^0.21.0 to ^0.15.0 || ^0.19.0 || ^0.21.0 || ^0.22.0 [\#8](https://github.com/antidot-framework/message-queue/pull/8) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Update phpro/grumphp requirement from ^0.15.0 || ^0.19.0 to ^0.15.0 || ^0.19.0 || ^0.21.0 [\#7](https://github.com/antidot-framework/message-queue/pull/7) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Fix namespace and improve assertEquals assertion [\#6](https://github.com/antidot-framework/message-queue/pull/6) ([peter279k](https://github.com/peter279k))
+
+## [0.1.1](https://github.com/antidot-framework/message-queue/tree/0.1.1) (2020-07-14)
+
+[Full Changelog](https://github.com/antidot-framework/message-queue/compare/0.1.0...0.1.1)
 
 **Merged pull requests:**
 
