@@ -25,9 +25,6 @@ class QueueEventTest extends TestCase
         $event = $eventClass::occur(self::PAYLOAD);
         $this->assertEquals(self::PAYLOAD, $event->payload());
         $this->assertEquals(self::PAYLOAD, $event->jsonSerialize());
-        $this->assertEquals(false, $event->isPropagationStopped());
-
-
-
+        $this->assertFalse($event->isPropagationStopped());
     }
 }
