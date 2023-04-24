@@ -28,7 +28,7 @@
         "enqueue/pheanstalk": "^0.10.2",
         "enqueue/redis": "^0.10.1",
         "enqueue/sqs": "^0.10.1",
-        "infection/infection": "^0.24.0",
+        "infection/infection": "^0.24.0 || ^0.26.0",
         "phpro/grumphp": "~0.17 || ~1.0",
         "phpstan/phpstan": "^0.11.5 || ^0.12.0",
         "phpunit/phpunit": "^8.0 || ^9.0",
